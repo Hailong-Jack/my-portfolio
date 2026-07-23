@@ -15,13 +15,14 @@ body{background:#0a0a0f;color:#e8e8ec;font-family:'Inter',-apple-system,sans-ser
 .card-hover:hover{transform:translateY(-8px);border-color:rgba(167,139,250,.4);box-shadow:0 20px 60px rgba(167,139,250,.15)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
-@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes gridMove{0%{transform:perspective(500px) rotateX(60deg) translateY(0)}100%{transform:perspective(500px) rotateX(60deg) translateY(40px)}}
 .animate-fade-up{animation:fadeUp .8s ease-out forwards;opacity:0}
 .delay-1{animation-delay:.1s}
 .delay-2{animation-delay:.2s}
 .delay-3{animation-delay:.3s}
 .delay-4{animation-delay:.4s}
-.nav-blur{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(10,10,15,.85);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav-blur{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(10,10,15,.9);border-bottom:1px solid rgba(255,255,255,.05)}
 .btn-primary{background:linear-gradient(135deg,#7c3aed,#2563eb);transition:all .3s ease}
 .btn-primary:hover{transform:scale(1.02);box-shadow:0 10px 40px rgba(124,58,237,.4)}
 .btn-ghost{border:1px solid rgba(255,255,255,.15);transition:all .3s ease}
@@ -29,20 +30,27 @@ body{background:#0a0a0f;color:#e8e8ec;font-family:'Inter',-apple-system,sans-ser
 .reveal{opacity:0;transform:translateY(30px);transition:all .8s ease-out}
 .reveal.active{opacity:1;transform:translateY(0)}
 a{color:inherit;text-decoration:none}
-section{padding:100px 24px;max-width:1200px;margin:0 auto}
+section{padding:100px 24px;max-width:1200px;margin:0 auto;position:relative}
 .tag{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:#c4b5fd;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.bg-grid{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg-grid::before{content:'';position:absolute;inset:-50%;background-image:linear-gradient(rgba(167,139,250,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,.08) 1px,transparent 1px);background-size:60px 60px;transform:perspective(500px) rotateX(60deg);animation:gridMove 20s linear infinite}
+.bg-grid::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 0%,#0a0a0f 70%)}
+.bg-dots{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg-dots::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(167,139,250,.12) 1px,transparent 1px);background-size:30px 30px}
+.bg-hex{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bg-hex::before{content:'';position:absolute;inset:-20%;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 0L56 16.7v33.3L28 66.7 0 50V16.7z' fill='none' stroke='rgba(167,139,250,0.06)' stroke-width='1'/%3E%3C/svg%3E");background-size:56px 66.7px}
 @media(max-width:768px){.grid-2,.grid-4{grid-template-columns:1fr!important}.grid-3{grid-template-columns:1fr!important}section{padding:60px 16px}}
 </style>
 </head>
 <body>
 
 <!-- 导航 -->
-<nav class="nav-blur" style="position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;display:flex;justify-content:space-between;align-items:center">
-<div style="font-weight:800;font-size:22px;letter-spacing:-.5px;display:flex;align-items:center;gap:10px">
-<span style="font-size:28px">🌐</span>
+<nav class="nav-blur" style="position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;display:flex;justify-content:space-between;align-items:center">
+<div style="font-weight:800;font-size:20px;letter-spacing:-.5px;display:flex;align-items:center;gap:10px;z-index:1">
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="url(#navGrad)" stroke-width="2"/><circle cx="16" cy="16" r="6" fill="url(#navGrad)"/><defs><linearGradient id="navGrad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs></svg>
 <span class="glow-text">海龙空间智能</span>
 </div>
-<div style="display:flex;gap:28px;font-size:14px;font-weight:500">
+<div style="display:flex;gap:24px;font-size:14px;font-weight:500;z-index:1">
 <a href="#products" style="color:#9ca3af;transition:color .3s" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#9ca3af'">产品中心</a>
 <a href="#solutions" style="color:#9ca3af;transition:color .3s" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#9ca3af'">解决方案</a>
 <a href="#about" style="color:#9ca3af;transition:color .3s" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#9ca3af'">关于我们</a>
@@ -52,205 +60,334 @@ section{padding:100px 24px;max-width:1200px;margin:0 auto}
 
 <!-- Hero -->
 <section style="min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:140px 24px 100px;position:relative;overflow:hidden">
-<div style="position:absolute;top:15%;left:5%;width:400px;height:400px;background:rgba(167,139,250,.06);border-radius:50%;filter:blur(100px);animation:float 8s ease-in-out infinite"></div>
-<div style="position:absolute;bottom:10%;right:5%;width:350px;height:350px;background:rgba(96,165,250,.06);border-radius:50%;filter:blur(100px);animation:float 10s ease-in-out infinite reverse"></div>
-<div style="position:absolute;top:50%;left:50%;width:500px;height:500px;background:rgba(52,211,153,.04);border-radius:50%;filter:blur(120px);transform:translate(-50%,-50%)"></div>
-
-<div style="position:relative;z-index:1;max-width:800px">
-<div class="animate-fade-up" style="display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:50px;border:1px solid rgba(167,139,250,.3);font-size:13px;color:#a78bfa;margin-bottom:32px;letter-spacing:2px">
+<div class="bg-grid"></div>
+<div style="position:absolute;top:20%;left:15%;width:8px;height:8px;background:#a78bfa;border-radius:50%;box-shadow:0 0 20px #a78bfa;animation:float 4s ease-in-out infinite;z-index:1"></div>
+<div style="position:absolute;top:35%;right:20%;width:6px;height:6px;background:#60a5fa;border-radius:50%;box-shadow:0 0 15px #60a5fa;animation:float 5s ease-in-out infinite .5s;z-index:1"></div>
+<div style="position:absolute;bottom:30%;left:25%;width:5px;height:5px;background:#34d399;border-radius:50%;box-shadow:0 0 12px #34d399;animation:float 6s ease-in-out infinite 1s;z-index:1"></div>
+<div style="position:absolute;top:60%;right:15%;width:7px;height:7px;background:#f472b6;border-radius:50%;box-shadow:0 0 18px #f472b6;animation:float 4.5s ease-in-out infinite 1.5s;z-index:1"></div>
+<div style="position:relative;z-index:2;max-width:800px">
+<div class="animate-fade-up" style="display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:50px;border:1px solid rgba(167,139,250,.3);font-size:13px;color:#a78bfa;margin-bottom:32px;letter-spacing:2px;background:rgba(167,139,250,.05)">
 <span style="display:inline-block;width:6px;height:6px;background:#34d399;border-radius:50%;animation:pulse 2s infinite"></span>
 智析时空 赋能未来
 </div>
-
-<h1 class="animate-fade-up delay-1" style="font-size:clamp(36px,7vw,68px);font-weight:800;line-height:1.1;letter-spacing:-2px;margin-bottom:24px">
+<h1 class="animate-fade-up delay-1" style="font-size:clamp(34px,7vw,64px);font-weight:800;line-height:1.1;letter-spacing:-2px;margin-bottom:24px">
 海龙空间智能<br>
-<span style="color:#6b7280;font-weight:300;font-size:clamp(20px,3vw,32px)">无插件、轻量级三维GIS应用平台</span>
+<span style="color:#6b7280;font-weight:300;font-size:clamp(18px,3vw,30px)">无插件、轻量级三维GIS应用平台</span>
 </h1>
-
-<p class="animate-fade-up delay-2" style="font-size:clamp(15px,2vw,18px);color:#9ca3af;max-width:600px;line-height:1.8;margin:0 auto 40px">
+<p class="animate-fade-up delay-2" style="font-size:clamp(14px,2vw,17px);color:#9ca3af;max-width:580px;line-height:1.8;margin:0 auto 40px">
 专注于地理信息系统（GIS）技术研发，提供从桌面端、Web端到移动端的全栈空间智能解决方案，助力数字孪生城市建设。
 </p>
-
-<div class="animate-fade-up delay-3" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-<a href="#products" class="btn-primary" style="padding:14px 36px;border-radius:12px;color:#fff;font-weight:600;font-size:15px">探索产品</a>
-<a href="#contact" class="btn-ghost" style="padding:14px 36px;border-radius:12px;color:#e8e8ec;font-weight:600;font-size:15px">联系我们</a>
+<div class="animate-fade-up delay-3" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+<a href="#products" class="btn-primary" style="padding:14px 32px;border-radius:12px;color:#fff;font-weight:600;font-size:15px">探索产品</a>
+<a href="#contact" class="btn-ghost" style="padding:14px 32px;border-radius:12px;color:#e8e8ec;font-weight:600;font-size:15px">联系我们</a>
 </div>
 </div>
-
-<!-- 产品图标预览 -->
-<div class="animate-fade-up delay-4" style="position:relative;z-index:1;margin-top:80px;display:flex;gap:20px;flex-wrap:wrap;justify-content:center">
-<div style="padding:20px 28px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:140px">
-<div style="font-size:32px;margin-bottom:8px">🗺️</div>
-<div style="font-size:13px;font-weight:600">Web3D</div>
-<div style="font-size:11px;color:#6b7280;margin-top:2px">三维平台</div>
+<div class="animate-fade-up delay-4" style="position:relative;z-index:2;margin-top:80px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+<div style="padding:18px 22px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:120px;backdrop-filter:blur(10px)">
+<svg width="36" height="36" viewBox="0 0 36 36" style="margin:0 auto 8px"><rect x="4" y="4" width="28" height="28" rx="4" fill="none" stroke="#a78bfa" stroke-width="1.5"/><line x1="4" y1="14" x2="32" y2="14" stroke="#a78bfa" stroke-width="1" opacity=".5"/><line x1="4" y1="22" x2="32" y2="22" stroke="#a78bfa" stroke-width="1" opacity=".5"/><line x1="14" y1="4" x2="14" y2="32" stroke="#a78bfa" stroke-width="1" opacity=".5"/><line x1="22" y1="4" x2="22" y2="32" stroke="#a78bfa" stroke-width="1" opacity=".5"/></svg>
+<div style="font-size:13px;font-weight:600">Web3D</div><div style="font-size:11px;color:#6b7280;margin-top:2px">三维平台</div>
 </div>
-<div style="padding:20px 28px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:140px">
-<div style="font-size:32px;margin-bottom:8px">☁️</div>
-<div style="font-size:13px;font-weight:600">Server</div>
-<div style="font-size:11px;color:#6b7280;margin-top:2px">云平台</div>
+<div style="padding:18px 22px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:120px;backdrop-filter:blur(10px)">
+<svg width="36" height="36" viewBox="0 0 36 36" style="margin:0 auto 8px"><ellipse cx="18" cy="22" rx="12" ry="6" fill="none" stroke="#60a5fa" stroke-width="1.5"/><ellipse cx="18" cy="18" rx="12" ry="6" fill="none" stroke="#60a5fa" stroke-width="1.5" opacity=".7"/><ellipse cx="18" cy="14" rx="12" ry="6" fill="none" stroke="#60a5fa" stroke-width="1.5" opacity=".4"/></svg>
+<div style="font-size:13px;font-weight:600">Server</div><div style="font-size:11px;color:#6b7280;margin-top:2px">云平台</div>
 </div>
-<div style="padding:20px 28px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:140px">
-<div style="font-size:32px;margin-bottom:8px">💻</div>
-<div style="font-size:13px;font-weight:600">Pro</div>
-<div style="font-size:11px;color:#6b7280;margin-top:2px">桌面端</div>
+<div style="padding:18px 22px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:120px;backdrop-filter:blur(10px)">
+<svg width="36" height="36" viewBox="0 0 36 36" style="margin:0 auto 8px"><rect x="6" y="4" width="24" height="18" rx="2" fill="none" stroke="#34d399" stroke-width="1.5"/><rect x="10" y="8" width="16" height="10" fill="none" stroke="#34d399" stroke-width="1" opacity=".5"/><line x1="14" y1="22" x2="14" y2="30" stroke="#34d399" stroke-width="1.5"/><line x1="22" y1="22" x2="22" y2="30" stroke="#34d399" stroke-width="1.5"/><line x1="10" y1="30" x2="26" y2="30" stroke="#34d399" stroke-width="1.5"/></svg>
+<div style="font-size:13px;font-weight:600">Pro</div><div style="font-size:11px;color:#6b7280;margin-top:2px">桌面端</div>
 </div>
-<div style="padding:20px 28px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:140px">
-<div style="font-size:32px;margin-bottom:8px">📱</div>
-<div style="font-size:13px;font-weight:600">Mobile</div>
-<div style="font-size:11px;color:#6b7280;margin-top:2px">移动端</div>
+<div style="padding:18px 22px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:120px;backdrop-filter:blur(10px)">
+<svg width="36" height="36" viewBox="0 0 36 36" style="margin:0 auto 8px"><rect x="10" y="2" width="16" height="28" rx="3" fill="none" stroke="#fbbf24" stroke-width="1.5"/><line x1="14" y1="6" x2="22" y2="6" stroke="#fbbf24" stroke-width="1" opacity=".5"/><circle cx="18" cy="24" r="3" fill="none" stroke="#fbbf24" stroke-width="1.5"/></svg>
+<div style="font-size:13px;font-weight:600">Mobile</div><div style="font-size:11px;color:#6b7280;margin-top:2px">移动端</div>
 </div>
-<div style="padding:20px 28px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:140px">
-<div style="font-size:32px;margin-bottom:8px">🛠️</div>
-<div style="font-size:13px;font-weight:600">SDK</div>
-<div style="font-size:11px;color:#6b7280;margin-top:2px">开发平台</div>
+<div style="padding:18px 22px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);text-align:center;min-width:120px;backdrop-filter:blur(10px)">
+<svg width="36" height="36" viewBox="0 0 36 36" style="margin:0 auto 8px"><rect x="4" y="4" width="10" height="10" rx="2" fill="none" stroke="#f472b6" stroke-width="1.5"/><rect x="22" y="4" width="10" height="10" rx="2" fill="none" stroke="#f472b6" stroke-width="1.5"/><rect x="4" y="22" width="10" height="10" rx="2" fill="none" stroke="#f472b6" stroke-width="1.5"/><rect x="22" y="22" width="10" height="10" rx="2" fill="none" stroke="#f472b6" stroke-width="1.5"/><line x1="14" y1="9" x2="22" y2="9" stroke="#f472b6" stroke-width="1" stroke-dasharray="2 2" opacity=".5"/><line x1="9" y1="14" x2="9" y2="22" stroke="#f472b6" stroke-width="1" stroke-dasharray="2 2" opacity=".5"/><line x1="27" y1="14" x2="27" y2="22" stroke="#f472b6" stroke-width="1" stroke-dasharray="2 2" opacity=".5"/><line x1="14" y1="27" x2="22" y2="27" stroke="#f472b6" stroke-width="1" stroke-dasharray="2 2" opacity=".5"/></svg>
+<div style="font-size:13px;font-weight:600">SDK</div><div style="font-size:11px;color:#6b7280;margin-top:2px">开发平台</div>
 </div>
 </div>
 </section>
 
 <!-- 产品中心 -->
 <section id="products">
+<div class="bg-hex"></div>
+<div style="position:relative;z-index:1">
 <div class="reveal" style="text-align:center;margin-bottom:60px">
 <div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">产品中心</div>
-<h2 style="font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">全栈 <span class="glow-text">GIS 产品矩阵</span></h2>
+<h2 style="font-size:clamp(26px,4vw,42px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">全栈 <span class="glow-text">GIS 产品矩阵</span></h2>
 <p style="color:#6b7280;max-width:520px;margin:0 auto;line-height:1.7">覆盖三维可视化、云服务、桌面端、移动端及二次开发的全链路空间智能产品</p>
 </div>
 
 <div class="grid-2" style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px">
-<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);padding:40px">
-<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-<div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;font-size:28px">🗺️</div>
-<div>
-<h3 style="font-size:22px;font-weight:700">SmartGIS Web3D</h3>
-<p style="color:#a78bfa;font-size:13px;font-weight:500">三维在线应用平台</p>
+<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);position:relative">
+<div style="height:200px;background:linear-gradient(135deg,#1e1b4b,#312e81);position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="w3d1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".3"/><stop offset="100%" stop-color="#60a5fa" stop-opacity=".1"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#w3d1)"/>
+<g stroke="#a78bfa" stroke-width=".8" fill="none" opacity=".4">
+<path d="M20,40 L20,80 L60,100 L60,60 Z"/><path d="M60,60 L100,40 L100,80 L60,100 Z"/><path d="M20,40 L60,60 L100,40 L60,20 Z"/>
+<path d="M40,50 L40,90 L80,110 L80,70 Z" opacity=".5"/><path d="M80,70 L120,50 L120,90 L80,110 Z" opacity=".5"/><path d="M40,50 L80,70 L120,50 L80,30 Z" opacity=".5"/>
+</g>
+<circle cx="80%" cy="20%" r="40" fill="#a78bfa" opacity=".1" filter="blur(20px)"/>
+</svg>
+<div style="position:absolute;bottom:20px;left:24px">
+<div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 8px 30px rgba(124,58,237,.4)">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9" opacity=".5"/><line x1="9" y1="3" x2="9" y2="21" opacity=".5"/></svg>
 </div>
 </div>
-<p style="color:#9ca3af;font-size:14px;line-height:1.8;margin-bottom:20px">无插件、轻量级三维在线应用平台，支持海量三维数据加载与实时渲染，为数字孪生、智慧城市提供底层支撑。</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<span class="tag">无插件</span>
-<span class="tag">WebGL</span>
-<span class="tag">实时渲染</span>
-<span class="tag">数字孪生</span>
 </div>
-</div>
-
-<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);padding:40px">
-<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-<div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#0891b2,#2563eb);display:flex;align-items:center;justify-content:center;font-size:28px">☁️</div>
-<div>
-<h3 style="font-size:22px;font-weight:700">SmartGIS Server</h3>
-<p style="color:#60a5fa;font-size:13px;font-weight:500">地理信息云平台</p>
-</div>
-</div>
-<p style="color:#9ca3af;font-size:14px;line-height:1.8;margin-bottom:20px">企业级地理信息服务中台，提供地图服务发布、空间数据管理、权限控制与高性能并发访问能力。</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<span class="tag">微服务</span>
-<span class="tag">高并发</span>
-<span class="tag">数据管理</span>
-<span class="tag">云原生</span>
+<div style="padding:28px">
+<h3 style="font-size:20px;font-weight:700;margin-bottom:6px">SmartGIS Web3D</h3>
+<p style="color:#a78bfa;font-size:13px;font-weight:500;margin-bottom:14px">三维在线应用平台</p>
+<p style="color:#9ca3af;font-size:14px;line-height:1.7;margin-bottom:18px">无插件、轻量级三维在线应用平台，支持海量三维数据加载与实时渲染，为数字孪生、智慧城市提供底层支撑。</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag">无插件</span><span class="tag">WebGL</span><span class="tag">实时渲染</span><span class="tag">数字孪生</span></div>
 </div>
 </div>
 
-<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);padding:40px">
-<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-<div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#059669,#0891b2);display:flex;align-items:center;justify-content:center;font-size:28px">💻</div>
-<div>
-<h3 style="font-size:22px;font-weight:700">SmartGIS Pro</h3>
-<p style="color:#34d399;font-size:13px;font-weight:500">桌面GIS平台</p>
+<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);position:relative">
+<div style="height:200px;background:linear-gradient(135deg,#0c4a6e,#1e3a5f);position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="srv1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#60a5fa" stop-opacity=".3"/><stop offset="100%" stop-color="#0891b2" stop-opacity=".1"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#srv1)"/>
+<g fill="none" stroke="#60a5fa" stroke-width=".8" opacity=".5">
+<rect x="15%" y="25%" width="12%" height="18%" rx="3"/><rect x="35%" y="35%" width="12%" height="18%" rx="3"/><rect x="55%" y="20%" width="12%" height="18%" rx="3"/><rect x="75%" y="40%" width="12%" height="18%" rx="3"/>
+<line x1="21%" y1="43%" x2="35%" y2="44%"/><line x1="41%" y1="53%" x2="55%" y2="38%"/><line x1="61%" y1="38%" x2="75%" y2="49%"/>
+<circle cx="21%" cy="34%" r="2" fill="#60a5fa"/><circle cx="41%" cy="44%" r="2" fill="#60a5fa"/><circle cx="61%" cy="29%" r="2" fill="#60a5fa"/><circle cx="81%" cy="49%" r="2" fill="#60a5fa"/>
+</g>
+<circle cx="20%" cy="80%" r="50" fill="#60a5fa" opacity=".08" filter="blur(30px)"/>
+</svg>
+<div style="position:absolute;bottom:20px;left:24px">
+<div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#0891b2,#2563eb);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 8px 30px rgba(37,99,235,.4)">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><ellipse cx="12" cy="17" rx="8" ry="4"/><ellipse cx="12" cy="13" rx="8" ry="4" opacity=".7"/><ellipse cx="12" cy="9" rx="8" ry="4" opacity=".4"/></svg>
 </div>
 </div>
-<p style="color:#9ca3af;font-size:14px;line-height:1.8;margin-bottom:20px">专业级桌面GIS软件，集成数据采集、编辑、分析与制图全流程，满足测绘、规划、国土等行业深度应用需求。</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<span class="tag">空间分析</span>
-<span class="tag">数据编辑</span>
-<span class="tag">制图输出</span>
-<span class="tag">行业定制</span>
+</div>
+<div style="padding:28px">
+<h3 style="font-size:20px;font-weight:700;margin-bottom:6px">SmartGIS Server</h3>
+<p style="color:#60a5fa;font-size:13px;font-weight:500;margin-bottom:14px">地理信息云平台</p>
+<p style="color:#9ca3af;font-size:14px;line-height:1.7;margin-bottom:18px">企业级地理信息服务中台，提供地图服务发布、空间数据管理、权限控制与高性能并发访问能力。</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag">微服务</span><span class="tag">高并发</span><span class="tag">数据管理</span><span class="tag">云原生</span></div>
 </div>
 </div>
 
-<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);padding:40px">
-<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-<div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#d97706,#dc2626);display:flex;align-items:center;justify-content:center;font-size:28px">📱</div>
-<div>
-<h3 style="font-size:22px;font-weight:700">SmartGIS Mobile</h3>
-<p style="color:#fbbf24;font-size:13px;font-weight:500">移动GIS平台</p>
+<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);position:relative">
+<div style="height:200px;background:linear-gradient(135deg,#064e3b,#065f46);position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="pro1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#34d399" stop-opacity=".3"/><stop offset="100%" stop-color="#059669" stop-opacity=".1"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#pro1)"/>
+<g fill="none" stroke="#34d399" stroke-width=".8" opacity=".5">
+<rect x="20%" y="15%" width="60%" height="50%" rx="4"/><line x1="20%" y1="25%" x2="80%" y2="25%" opacity=".3"/><rect x="25%" y="32%" width="20%" height="25%" rx="2" opacity=".3"/><rect x="50%" y="32%" width="25%" height="10%" rx="2" opacity=".3"/><rect x="50%" y="47%" width="25%" height="10%" rx="2" opacity=".3"/>
+<circle cx="23%" cy="20%" r="1.5" fill="#34d399"/><circle cx="27%" cy="20%" r="1.5" fill="#34d399"/><circle cx="31%" cy="20%" r="1.5" fill="#34d399"/>
+</g>
+<circle cx="80%" cy="20%" r="40" fill="#34d399" opacity=".1" filter="blur(25px)"/>
+</svg>
+<div style="position:absolute;bottom:20px;left:24px">
+<div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#059669,#0891b2);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 8px 30px rgba(5,150,105,.4)">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="3" width="16" height="12" rx="2"/><line x1="8" y1="7" x2="16" y2="7" opacity=".5"/><line x1="8" y1="10" x2="13" y2="10" opacity=".5"/><line x1="9" y1="15" x2="9" y2="21"/><line x1="15" y1="15" x2="15" y2="21"/><line x1="6" y1="21" x2="18" y2="21"/></svg>
 </div>
 </div>
-<p style="color:#9ca3af;font-size:14px;line-height:1.8;margin-bottom:20px">跨平台移动GIS应用框架，支持离线地图、外业采集、实时定位与轨迹追踪，让空间数据随身携带。</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<span class="tag">离线地图</span>
-<span class="tag">外业采集</span>
-<span class="tag">实时定位</span>
-<span class="tag">跨平台</span>
+</div>
+<div style="padding:28px">
+<h3 style="font-size:20px;font-weight:700;margin-bottom:6px">SmartGIS Pro</h3>
+<p style="color:#34d399;font-size:13px;font-weight:500;margin-bottom:14px">桌面GIS平台</p>
+<p style="color:#9ca3af;font-size:14px;line-height:1.7;margin-bottom:18px">专业级桌面GIS软件，集成数据采集、编辑、分析与制图全流程，满足测绘、规划、国土等行业深度应用需求。</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag">空间分析</span><span class="tag">数据编辑</span><span class="tag">制图输出</span><span class="tag">行业定制</span></div>
+</div>
+</div>
+
+<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);position:relative">
+<div style="height:200px;background:linear-gradient(135deg,#7c2d12,#9a3412);position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="mob1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbbf24" stop-opacity=".3"/><stop offset="100%" stop-color="#dc2626" stop-opacity=".1"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#mob1)"/>
+<g fill="none" stroke="#fbbf24" stroke-width=".8" opacity=".5">
+<rect x="38%" y="12%" width="24%" height="60%" rx="6"/><line x1="42%" y1="20%" x2="58%" y2="20%" opacity=".3"/><circle cx="50%" cy="62%" r="6"/><line x1="42%" y1="28%" x2="52%" y2="28%" opacity=".3"/><line x1="42%" y1="33%" x2="56%" y2="33%" opacity=".3"/><line x1="42%" y1="38%" x2="54%" y2="38%" opacity=".3"/>
+<rect x="35%" y="45%" width="8%" height="12%" rx="2" opacity=".2"/><rect x="57%" y="40%" width="8%" height="12%" rx="2" opacity=".2"/>
+</g>
+<circle cx="20%" cy="70%" r="45" fill="#fbbf24" opacity=".08" filter="blur(30px)"/>
+</svg>
+<div style="position:absolute;bottom:20px;left:24px">
+<div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#d97706,#dc2626);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 8px 30px rgba(217,119,6,.4)">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><line x1="9" y1="6" x2="15" y2="6" opacity=".5"/><circle cx="12" cy="17" r="1.5"/></svg>
+</div>
+</div>
+</div>
+<div style="padding:28px">
+<h3 style="font-size:20px;font-weight:700;margin-bottom:6px">SmartGIS Mobile</h3>
+<p style="color:#fbbf24;font-size:13px;font-weight:500;margin-bottom:14px">移动GIS平台</p>
+<p style="color:#9ca3af;font-size:14px;line-height:1.7;margin-bottom:18px">跨平台移动GIS应用框架，支持离线地图、外业采集、实时定位与轨迹追踪，让空间数据随身携带。</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag">离线地图</span><span class="tag">外业采集</span><span class="tag">实时定位</span><span class="tag">跨平台</span></div>
 </div>
 </div>
 </div>
 
 <div class="reveal" style="margin-top:24px">
-<div class="card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);padding:40px">
-<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-<div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#7c3aed,#db2777);display:flex;align-items:center;justify-content:center;font-size:28px">🛠️</div>
-<div>
-<h3 style="font-size:22px;font-weight:700">SmartGIS SDK</h3>
-<p style="color:#f472b6;font-size:13px;font-weight:500">二次开发平台</p>
+<div class="card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);position:relative">
+<div style="height:180px;background:linear-gradient(135deg,#4c1d95,#831843);position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="sdk1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c084fc" stop-opacity=".3"/><stop offset="100%" stop-color="#f472b6" stop-opacity=".1"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#sdk1)"/>
+<g fill="none" stroke="#c084fc" stroke-width=".8" opacity=".4">
+<rect x="8%" y="20%" width="18%" height="22%" rx="3"/><rect x="30%" y="15%" width="18%" height="22%" rx="3"/><rect x="52%" y="25%" width="18%" height="22%" rx="3"/><rect x="74%" y="18%" width="18%" height="22%" rx="3"/>
+<line x1="17%" y1="42%" x2="30%" y2="37%"/><line x1="39%" y1="37%" x2="52%" y2="47%"/><line x1="61%" y1="47%" x2="74%" y2="40%"/>
+<rect x="12%" y="55%" width="30%" height="4%" rx="2" opacity=".3"/><rect x="12%" y="62%" width="22%" height="4%" rx="2" opacity=".3"/><rect x="12%" y="69%" width="26%" height="4%" rx="2" opacity=".3"/>
+<rect x="55%" y="55%" width="30%" height="4%" rx="2" opacity=".3"/><rect x="55%" y="62%" width="18%" height="4%" rx="2" opacity=".3"/><rect x="55%" y="69%" width="24%" height="4%" rx="2" opacity=".3"/>
+</g>
+<circle cx="85%" cy="75%" r="50" fill="#c084fc" opacity=".08" filter="blur(30px)"/>
+</svg>
+<div style="position:absolute;bottom:20px;left:24px">
+<div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#db2777);display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 8px 30px rgba(124,58,237,.4)">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><line x1="10" y1="6.5" x2="14" y2="6.5" stroke-dasharray="2 2" opacity=".5"/><line x1="6.5" y1="10" x2="6.5" y2="14" stroke-dasharray="2 2" opacity=".5"/><line x1="17.5" y1="10" x2="17.5" y2="14" stroke-dasharray="2 2" opacity=".5"/><line x1="10" y1="17.5" x2="14" y2="17.5" stroke-dasharray="2 2" opacity=".5"/></svg>
 </div>
 </div>
-<p style="color:#9ca3af;font-size:14px;line-height:1.8;margin-bottom:20px">开放、灵活的GIS开发工具包，提供丰富的API接口与示例代码，支持快速集成到现有业务系统中，降低开发门槛。</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<span class="tag">丰富API</span>
-<span class="tag">快速集成</span>
-<span class="tag">示例完备</span>
-<span class="tag">多语言支持</span>
+</div>
+<div style="padding:28px">
+<h3 style="font-size:20px;font-weight:700;margin-bottom:6px">SmartGIS SDK</h3>
+<p style="color:#f472b6;font-size:13px;font-weight:500;margin-bottom:14px">二次开发平台</p>
+<p style="color:#9ca3af;font-size:14px;line-height:1.7;margin-bottom:18px">开放、灵活的GIS开发工具包，提供丰富的API接口与示例代码，支持快速集成到现有业务系统中，降低开发门槛。</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag">丰富API</span><span class="tag">快速集成</span><span class="tag">示例完备</span><span class="tag">多语言支持</span></div>
+</div>
 </div>
 </div>
 </div>
 </section>
 
 <!-- 解决方案 -->
-<section id="solutions" style="background:rgba(255,255,255,.02)">
-<div style="max-width:1200px;margin:0 auto;padding:100px 24px">
+<section id="solutions" style="background:rgba(255,255,255,.02);position:relative;overflow:hidden">
+<div class="bg-dots"></div>
+<div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:100px 24px">
 <div class="reveal" style="text-align:center;margin-bottom:60px">
 <div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">解决方案</div>
-<h2 style="font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">行业 <span class="glow-text">应用场景</span></h2>
+<h2 style="font-size:clamp(26px,4vw,42px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">行业 <span class="glow-text">应用场景</span></h2>
 <p style="color:#6b7280;max-width:520px;margin:0 auto;line-height:1.7">深耕多个垂直领域，用空间智能技术解决实际业务问题</p>
 </div>
 
-<div class="grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
-<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);padding:32px;text-align:center">
-<div style="font-size:48px;margin-bottom:16px">🏙️</div>
-<h3 style="font-size:18px;font-weight:700;margin-bottom:10px">智慧城市</h3>
+<div class="grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);overflow:hidden;position:relative">
+<div style="height:160px;position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="city1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#0a0a0f"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#city1)"/>
+<g fill="rgba(167,139,250,.15)" stroke="rgba(167,139,250,.3)" stroke-width=".5">
+<rect x="10%" y="55%" width="8%" height="35%"/><rect x="20%" y="40%" width="6%" height="50%"/><rect x="28%" y="60%" width="10%" height="30%"/><rect x="40%" y="35%" width="7%" height="55%"/><rect x="50%" y="50%" width="9%" height="40%"/><rect x="62%" y="45%" width="6%" height="45%"/><rect x="72%" y="55%" width="8%" height="35%"/><rect x="83%" y="42%" width="7%" height="48%"/>
+</g>
+<circle cx="50%" cy="100%" r="80" fill="#a78bfa" opacity=".05" filter="blur(30px)"/>
+</svg>
+<div style="position:absolute;bottom:16px;left:20px;font-size:36px">🏙️</div>
+</div>
+<div style="padding:24px">
+<h3 style="font-size:17px;font-weight:700;margin-bottom:8px">智慧城市</h3>
 <p style="color:#9ca3af;font-size:13px;line-height:1.7">城市三维建模、地下管网管理、城市规划辅助决策</p>
 </div>
-<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);padding:32px;text-align:center">
-<div style="font-size:48px;margin-bottom:16px">🌾</div>
-<h3 style="font-size:18px;font-weight:700;margin-bottom:10px">自然资源</h3>
+</div>
+
+<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);overflow:hidden;position:relative">
+<div style="height:160px;position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="nature1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#0a0a0f"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#nature1)"/>
+<path d="M0,100 L0,60 Q15,40 30,55 T60,45 T90,50 T100,40 L100,100 Z" fill="rgba(52,211,153,.12)" stroke="rgba(52,211,153,.3)" stroke-width=".5"/>
+<path d="M0,100 L0,70 Q20,55 40,65 T80,58 T100,62 L100,100 Z" fill="rgba(52,211,153,.08)" stroke="rgba(52,211,153,.2)" stroke-width=".5"/>
+<circle cx="80%" cy="20%" r="3" fill="#fbbf24" opacity=".6"/>
+</svg>
+<div style="position:absolute;bottom:16px;left:20px;font-size:36px">🌾</div>
+</div>
+<div style="padding:24px">
+<h3 style="font-size:17px;font-weight:700;margin-bottom:8px">自然资源</h3>
 <p style="color:#9ca3af;font-size:13px;line-height:1.7">国土调查、耕地保护、生态修复监测、不动产登记</p>
 </div>
-<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);padding:32px;text-align:center">
-<div style="font-size:48px;margin-bottom:16px">🚧</div>
-<h3 style="font-size:18px;font-weight:700;margin-bottom:10px">工程建设</h3>
+</div>
+
+<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);overflow:hidden;position:relative">
+<div style="height:160px;position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="eng1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7c2d12"/><stop offset="100%" stop-color="#0a0a0f"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#eng1)"/>
+<g stroke="rgba(251,191,36,.2)" stroke-width=".5">
+<line x1="0" y1="30%" x2="100%" y2="30%"/><line x1="0" y1="50%" x2="100%" y2="50%"/><line x1="0" y1="70%" x2="100%" y2="70%"/><line x1="25%" y1="0" x2="25%" y2="100%"/><line x1="50%" y1="0" x2="50%" y2="100%"/><line x1="75%" y1="0" x2="75%" y2="100%"/>
+</g>
+<rect x="30%" y="35%" width="40%" height="30%" fill="none" stroke="rgba(251,191,36,.3)" stroke-width="1" rx="2"/>
+<line x1="30%" y1="42%" x2="70%" y2="42%" stroke="rgba(251,191,36,.2)" stroke-width=".5"/>
+<line x1="30%" y1="50%" x2="60%" y2="50%" stroke="rgba(251,191,36,.2)" stroke-width=".5"/>
+<line x1="30%" y1="58%" x2="65%" y2="58%" stroke="rgba(251,191,36,.2)" stroke-width=".5"/>
+</svg>
+<div style="position:absolute;bottom:16px;left:20px;font-size:36px">🚧</div>
+</div>
+<div style="padding:24px">
+<h3 style="font-size:17px;font-weight:700;margin-bottom:8px">工程建设</h3>
 <p style="color:#9ca3af;font-size:13px;line-height:1.7">施工进度可视化、BIM+GIS融合、工程全生命周期管理</p>
 </div>
-<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);padding:32px;text-align:center">
-<div style="font-size:48px;margin-bottom:16px">🌊</div>
-<h3 style="font-size:18px;font-weight:700;margin-bottom:10px">水利环保</h3>
+</div>
+
+<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);overflow:hidden;position:relative">
+<div style="height:160px;position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="water1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0c4a6e"/><stop offset="100%" stop-color="#0a0a0f"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#water1)"/>
+<path d="M0,55 Q25,45 50,55 T100,55" fill="none" stroke="rgba(96,165,250,.3)" stroke-width="1"/>
+<path d="M0,65 Q25,55 50,65 T100,65" fill="none" stroke="rgba(96,165,250,.2)" stroke-width="1"/>
+<path d="M0,75 Q25,65 50,75 T100,75" fill="none" stroke="rgba(96,165,250,.15)" stroke-width="1"/>
+<circle cx="20%" cy="35%" r="2" fill="#60a5fa" opacity=".5"/><circle cx="25%" cy="30%" r="1.5" fill="#60a5fa" opacity=".3"/><circle cx="70%" cy="40%" r="2" fill="#60a5fa" opacity=".4"/>
+</svg>
+<div style="position:absolute;bottom:16px;left:20px;font-size:36px">🌊</div>
+</div>
+<div style="padding:24px">
+<h3 style="font-size:17px;font-weight:700;margin-bottom:8px">水利环保</h3>
 <p style="color:#9ca3af;font-size:13px;line-height:1.7">河湖水域监测、污染源追踪、水文分析、防汛预警</p>
 </div>
-<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);padding:32px;text-align:center">
-<div style="font-size:48px;margin-bottom:16px">🛡️</div>
-<h3 style="font-size:18px;font-weight:700;margin-bottom:10px">应急管理</h3>
+</div>
+
+<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);overflow:hidden;position:relative">
+<div style="height:160px;position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="emg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7f1d1d"/><stop offset="100%" stop-color="#0a0a0f"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#emg1)"/>
+<circle cx="50%" cy="50%" r="15%" fill="none" stroke="rgba(248,113,113,.3)" stroke-width="1"/>
+<circle cx="50%" cy="50%" r="25%" fill="none" stroke="rgba(248,113,113,.2)" stroke-width="1"/>
+<circle cx="50%" cy="50%" r="35%" fill="none" stroke="rgba(248,113,113,.1)" stroke-width="1"/>
+<line x1="50%" y1="50%" x2="80%" y2="30%" stroke="rgba(248,113,113,.4)" stroke-width="1.5" stroke-linecap="round"/>
+<circle cx="80%" cy="30%" r="3" fill="#f87171"/>
+<circle cx="50%" cy="50%" r="4" fill="rgba(248,113,113,.3)"/>
+</svg>
+<div style="position:absolute;bottom:16px;left:20px;font-size:36px">🛡️</div>
+</div>
+<div style="padding:24px">
+<h3 style="font-size:17px;font-weight:700;margin-bottom:8px">应急管理</h3>
 <p style="color:#9ca3af;font-size:13px;line-height:1.7">灾害风险评估、应急指挥调度、救援路径规划、灾后评估</p>
 </div>
-<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);padding:32px;text-align:center">
-<div style="font-size:48px;margin-bottom:16px">🏭</div>
-<h3 style="font-size:18px;font-weight:700;margin-bottom:10px">园区管理</h3>
+</div>
+
+<div class="reveal card-hover glow-border" style="border-radius:20px;background:rgba(255,255,255,.03);overflow:hidden;position:relative">
+<div style="height:160px;position:relative;overflow:hidden">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><linearGradient id="park1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3f6212"/><stop offset="100%" stop-color="#0a0a0f"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="url(#park1)"/>
+<g fill="none" stroke="rgba(163,230,53,.25)" stroke-width=".5">
+<rect x="15%" y="20%" width="25%" height="30%" rx="2"/><rect x="45%" y="20%" width="20%" height="20%" rx="2"/><rect x="70%" y="20%" width="18%" height="25%" rx="2"/><rect x="15%" y="55%" width="20%" height="25%" rx="2"/><rect x="40%" y="45%" width="25%" height="35%" rx="2"/><rect x="70%" y="50%" width="18%" height="30%" rx="2"/>
+<line x1="40%" y1="35%" x2="45%" y2="30%"/><line x1="65%" y1="30%" x2="70%" y2="32%"/><line x1="35%" y1="55%" x2="40%" y2="50%"/><line x1="65%" y1="62%" x2="70%" y2="55%"/>
+</g>
+<circle cx="50%" cy="50%" r="60" fill="#a3e635" opacity=".03" filter="blur(20px)"/>
+</svg>
+<div style="position:absolute;bottom:16px;left:20px;font-size:36px">🏭</div>
+</div>
+<div style="padding:24px">
+<h3 style="font-size:17px;font-weight:700;margin-bottom:8px">园区管理</h3>
 <p style="color:#9ca3af;font-size:13px;line-height:1.7">园区三维可视化、资产管理、安防监控、能耗分析</p>
+</div>
 </div>
 </div>
 </div>
 </section>
 
 <!-- 关于我们 -->
-<section id="about">
+<section id="about" style="position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;pointer-events:none;z-index:0">
+<svg viewBox="0 0 1200 500" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;width:100%;height:70%;opacity:.12">
+<defs><linearGradient id="ter1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a78bfa" stop-opacity="0"/><stop offset="100%" stop-color="#a78bfa" stop-opacity=".2"/></linearGradient></defs>
+<path d="M0,500 L0,300 Q150,220 300,260 Q450,300 600,240 Q750,180 900,220 Q1050,260 1200,200 L1200,500 Z" fill="url(#ter1)"/>
+<path d="M0,500 L0,360 Q200,300 400,340 Q600,380 800,320 Q1000,260 1200,300 L1200,500 Z" fill="rgba(96,165,250,.08)"/>
+<path d="M0,500 L0,400 Q250,360 500,390 Q750,420 1000,370 L1200,400 L1200,500 Z" fill="rgba(52,211,153,.06)"/>
+</svg>
+</div>
+<div style="position:relative;z-index:1">
 <div class="reveal grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center">
 <div>
 <div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">关于我们</div>
@@ -270,10 +407,15 @@ section{padding:100px 24px;max-width:1200px;margin:0 auto}
 </div>
 </div>
 <div style="position:relative">
-<div style="width:100%;aspect-ratio:4/3;border-radius:24px;background:linear-gradient(135deg,rgba(167,139,250,.15),rgba(96,165,250,.15));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
-<div style="width:85%;height:85%;border-radius:20px;background:linear-gradient(135deg,#0f172a,#1e1b4b);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
-<div style="font-size:64px">🌐</div>
-<div style="font-size:18px;font-weight:700;color:#a78bfa">海龙空间智能</div>
+<div style="width:100%;aspect-ratio:4/3;border-radius:24px;background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(96,165,250,.12));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:1px solid rgba(167,139,250,.15)">
+<svg width="70%" height="70%" viewBox="0 0 200 150" style="position:absolute;opacity:.25">
+<path d="M40,30 Q60,20 80,35 Q100,25 120,40 Q140,30 160,45 Q170,60 155,75 Q165,90 150,105 Q130,115 110,100 Q90,110 70,95 Q50,105 35,85 Q25,70 40,55 Q30,40 40,30 Z" fill="none" stroke="#a78bfa" stroke-width="1"/>
+<circle cx="80" cy="55" r="4" fill="#a78bfa" opacity=".5"/><circle cx="120" cy="70" r="3" fill="#60a5fa" opacity=".5"/><circle cx="100" cy="85" r="5" fill="#34d399" opacity=".4"/>
+<line x1="80" y1="55" x2="120" y2="70" stroke="#a78bfa" stroke-width=".5" opacity=".3"/><line x1="120" y1="70" x2="100" y2="85" stroke="#60a5fa" stroke-width=".5" opacity=".3"/>
+</svg>
+<div style="position:relative;z-index:1;text-align:center">
+<div style="font-size:56px;margin-bottom:12px">🌐</div>
+<div style="font-size:20px;font-weight:700;color:#a78bfa;margin-bottom:6px">海龙空间智能</div>
 <div style="font-size:13px;color:#6b7280">SmartGIS Technology</div>
 </div>
 <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:rgba(167,139,250,.2);border-radius:50%;filter:blur(40px)"></div>
@@ -281,36 +423,53 @@ section{padding:100px 24px;max-width:1200px;margin:0 auto}
 </div>
 </div>
 </div>
+</div>
+</div>
 </section>
 
 <!-- 技术优势 -->
-<section style="background:rgba(255,255,255,.02)">
-<div style="max-width:1200px;margin:0 auto;padding:100px 24px">
+<section style="background:rgba(255,255,255,.02);position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;pointer-events:none;z-index:0">
+<svg style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+<defs><pattern id="circuit" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+<path d="M10,10 L30,10 L30,30 L50,30" fill="none" stroke="rgba(167,139,250,.06)" stroke-width="1"/>
+<path d="M60,20 L80,20 L80,50 L60,50" fill="none" stroke="rgba(167,139,250,.06)" stroke-width="1"/>
+<path d="M20,60 L20,80 L40,80 L40,90" fill="none" stroke="rgba(167,139,250,.06)" stroke-width="1"/>
+<circle cx="30" cy="10" r="2" fill="rgba(167,139,250,.08)"/><circle cx="50" cy="30" r="2" fill="rgba(167,139,250,.08)"/><circle cx="80" cy="50" r="2" fill="rgba(167,139,250,.08)"/>
+</pattern></defs>
+<rect width="100%" height="100%" fill="url(#circuit)"/>
+</svg>
+</div>
+<div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:100px 24px">
 <div class="reveal" style="text-align:center;margin-bottom:60px">
 <div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">技术优势</div>
-<h2 style="font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">核心 <span class="glow-text">技术能力</span></h2>
+<h2 style="font-size:clamp(26px,4vw,42px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">核心 <span class="glow-text">技术能力</span></h2>
 </div>
 
 <div class="grid-4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
-<div class="reveal" style="text-align:center;padding:28px 20px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
-<div style="font-size:36px;margin-bottom:12px">⚡</div>
-<h4 style="font-size:15px;font-weight:700;margin-bottom:6px">高性能渲染</h4>
-<p style="color:#6b7280;font-size:12px;line-height:1.6">百万级要素秒级加载，流畅的三维场景交互体验</p>
+<div class="reveal" style="text-align:center;padding:32px 20px;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;opacity:.1"><svg width="100%" height="100%"><rect x="20%" y="20%" width="60%" height="60%" fill="none" stroke="#a78bfa" stroke-width=".5" rx="4"/><line x1="20%" y1="35%" x2="80%" y2="35%" stroke="#a78bfa" stroke-width=".3"/><line x1="20%" y1="50%" x2="70%" y2="50%" stroke="#a78bfa" stroke-width=".3"/><line x1="20%" y1="65%" x2="75%" y2="65%" stroke="#a78bfa" stroke-width=".3"/></svg></div>
+<div style="font-size:36px;margin-bottom:14px;position:relative;z-index:1">⚡</div>
+<h4 style="font-size:15px;font-weight:700;margin-bottom:8px;position:relative;z-index:1">高性能渲染</h4>
+<p style="color:#6b7280;font-size:12px;line-height:1.6;position:relative;z-index:1">百万级要素秒级加载，流畅的三维场景交互体验</p>
 </div>
-<div class="reveal" style="text-align:center;padding:28px 20px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
-<div style="font-size:36px;margin-bottom:12px">🔒</div>
-<h4 style="font-size:15px;font-weight:700;margin-bottom:6px">安全可靠</h4>
-<p style="color:#6b7280;font-size:12px;line-height:1.6">国密算法支持，等保三级认证，数据安全有保障</p>
+<div class="reveal" style="text-align:center;padding:32px 20px;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;opacity:.1"><svg width="100%" height="100%"><rect x="25%" y="25%" width="50%" height="50%" fill="none" stroke="#60a5fa" stroke-width=".5" rx="4"/><circle cx="40%" cy="40%" r="8" fill="none" stroke="#60a5fa" stroke-width=".5"/><path d="M55,45 L65,40 L65,50 L55,55 Z" fill="none" stroke="#60a5fa" stroke-width=".5"/></svg></div>
+<div style="font-size:36px;margin-bottom:14px;position:relative;z-index:1">🔒</div>
+<h4 style="font-size:15px;font-weight:700;margin-bottom:8px;position:relative;z-index:1">安全可靠</h4>
+<p style="color:#6b7280;font-size:12px;line-height:1.6;position:relative;z-index:1">国密算法支持，等保三级认证，数据安全有保障</p>
 </div>
-<div class="reveal" style="text-align:center;padding:28px 20px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
-<div style="font-size:36px;margin-bottom:12px">🧩</div>
-<h4 style="font-size:15px;font-weight:700;margin-bottom:6px">灵活扩展</h4>
-<p style="color:#6b7280;font-size:12px;line-height:1.6">模块化架构设计，支持按需扩展与深度定制开发</p>
+<div class="reveal" style="text-align:center;padding:32px 20px;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;opacity:.1"><svg width="100%" height="100%"><rect x="20%" y="30%" width="25%" height="20%" fill="none" stroke="#34d399" stroke-width=".5" rx="2"/><rect x="50%" y="25%" width="25%" height="20%" fill="none" stroke="#34d399" stroke-width=".5" rx="2"/><rect x="35%" y="55%" width="25%" height="20%" fill="none" stroke="#34d399" stroke-width=".5" rx="2"/><line x1="45%" y1="50%" x2="50%" y2="45%" stroke="#34d399" stroke-width=".3"/><line x1="60%" y1="45%" x2="65%" y2="50%" stroke="#34d399" stroke-width=".3"/></svg></div>
+<div style="font-size:36px;margin-bottom:14px;position:relative;z-index:1">🧩</div>
+<h4 style="font-size:15px;font-weight:700;margin-bottom:8px;position:relative;z-index:1">灵活扩展</h4>
+<p style="color:#6b7280;font-size:12px;line-height:1.6;position:relative;z-index:1">模块化架构设计，支持按需扩展与深度定制开发</p>
 </div>
-<div class="reveal" style="text-align:center;padding:28px 20px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
-<div style="font-size:36px;margin-bottom:12px">🤖</div>
-<h4 style="font-size:15px;font-weight:700;margin-bottom:6px">AI赋能</h4>
-<p style="color:#6b7280;font-size:12px;line-height:1.6">融合深度学习与空间分析，实现智能识别与预测</p>
+<div class="reveal" style="text-align:center;padding:32px 20px;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;opacity:.1"><svg width="100%" height="100%"><circle cx="50%" cy="40%" r="15" fill="none" stroke="#f472b6" stroke-width=".5"/><circle cx="50%" cy="40%" r="8" fill="none" stroke="#f472b6" stroke-width=".5"/><line x1="50%" y1="25%" x2="50%" y2="15%" stroke="#f472b6" stroke-width=".5"/><line x1="50%" y1="55%" x2="50%" y2="65%" stroke="#f472b6" stroke-width=".5"/><line x1="35%" y1="40%" x2="25%" y2="40%" stroke="#f472b6" stroke-width=".5"/><line x1="65%" y1="40%" x2="75%" y2="40%" stroke="#f472b6" stroke-width=".5"/></svg></div>
+<div style="font-size:36px;margin-bottom:14px;position:relative;z-index:1">🤖</div>
+<h4 style="font-size:15px;font-weight:700;margin-bottom:8px;position:relative;z-index:1">AI赋能</h4>
+<p style="color:#6b7280;font-size:12px;line-height:1.6;position:relative;z-index:1">融合深度学习与空间分析，实现智能识别与预测</p>
 </div>
 </div>
 </div>
@@ -320,7 +479,7 @@ section{padding:100px 24px;max-width:1200px;margin:0 auto}
 <section id="contact" style="max-width:800px;text-align:center">
 <div class="reveal">
 <div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">联系我们</div>
-<h2 style="font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:16px;letter-spacing:-1px">期待与您的<span class="glow-text">合作</span></h2>
+<h2 style="font-size:clamp(26px,4vw,42px);font-weight:700;margin-bottom:16px;letter-spacing:-1px">期待与您的<span class="glow-text">合作</span></h2>
 <p style="color:#6b7280;max-width:520px;margin:0 auto 40px;line-height:1.7">无论您有项目需求、技术咨询还是合作意向，我们随时为您服务</p>
 
 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px">
@@ -348,7 +507,7 @@ section{padding:100px 24px;max-width:1200px;margin:0 auto}
 <!-- 页脚 -->
 <footer style="padding:40px 24px;text-align:center;border-top:1px solid rgba(255,255,255,.05)">
 <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:16px">
-<span style="font-size:20px">🌐</span>
+<svg width="24" height="24" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="url(#fGrad)" stroke-width="2"/><circle cx="16" cy="16" r="6" fill="url(#fGrad)"/><defs><linearGradient id="fGrad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs></svg>
 <span style="font-weight:700;font-size:16px">海龙空间智能</span>
 </div>
 <p style="color:#4b5563;font-size:13px;margin-bottom:8px">智析时空 赋能未来 | SmartGIS Technology</p>
