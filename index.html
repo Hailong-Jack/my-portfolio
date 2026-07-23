@@ -1,143 +1,215 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>你的名字 | 个人空间</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    html{scroll-behavior:smooth;}
-    body{background:#0a0a0f;color:#e8e8ec;font-family:'Inter',-apple-system,sans-serif;overflow-x:hidden;}
-    
-    .glow-text{
-      background: linear-gradient(135deg,#a78bfa 0%,#60a5fa 50%,#34d399 100%);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    }
-    .glow-border{
-      border:1px solid rgba(167,139,250,0.2);
-      box-shadow:0 0 30px rgba(167,139,250,0.08);
-    }
-    .card-hover{
-      transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
-    }
-    .card-hover:hover{
-      transform:translateY(-4px);
-      border-color:rgba(167,139,250,0.4);
-      box-shadow:0 20px 60px rgba(167,139,250,0.12);
-    }
-    @keyframes fadeUp{
-      from{opacity:0;transform:translateY(40px);}
-      to{opacity:1;transform:translateY(0);}
-    }
-    @keyframes float{
-      0%,100%{transform:translateY(0);}
-      50%{transform:translateY(-20px);}
-    }
-    .animate-fade-up{animation:fadeUp 0.8s ease-out forwards;opacity:0;}
-    .delay-1{animation-delay:0.1s;}
-    .delay-2{animation-delay:0.2s;}
-    .delay-3{animation-delay:0.3s;}
-    .delay-4{animation-delay:0.4s;}
-    .nav-blur{
-      backdrop-filter:blur(20px);
-      -webkit-backdrop-filter:blur(20px);
-      background:rgba(10,10,15,0.8);
-    }
-    .skill-tag{
-      background:rgba(167,139,250,0.08);
-      border:1px solid rgba(167,139,250,0.15);
-      transition:all 0.3s ease;
-    }
-    .skill-tag:hover{
-      background:rgba(167,139,250,0.2);
-      border-color:rgba(167,139,250,0.4);
-      transform:scale(1.05);
-    }
-    .timeline-line{
-      background:linear-gradient(to bottom,#a78bfa,#60a5fa,#34d399);
-    }
-    .btn-primary{
-      background:linear-gradient(135deg,#7c3aed,#2563eb);
-      transition:all 0.3s ease;
-    }
-    .btn-primary:hover{
-      transform:scale(1.02);
-      box-shadow:0 10px 40px rgba(124,58,237,0.4);
-    }
-    .btn-ghost{
-      border:1px solid rgba(255,255,255,0.15);
-      transition:all 0.3s ease;
-    }
-    .btn-ghost:hover{
-      border-color:rgba(167,139,250,0.5);
-      background:rgba(167,139,250,0.1);
-    }
-    .scroll-indicator{animation:float 2s ease-in-out infinite;}
-    .reveal{opacity:0;transform:translateY(30px);transition:all 0.8s ease-out;}
-    .reveal.active{opacity:1;transform:translateY(0);}
-    
-    a{color:inherit;text-decoration:none;}
-    
-    @media(max-width:768px){
-      .grid-2{grid-template-columns:1fr!important;}
-      .hero-title{font-size:40px!important;}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海龙 | 个人网页</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#0a0a0f;color:#e8e8ec;font-family:'Inter',-apple-system,sans-serif;overflow-x:hidden;line-height:1.6}
+.glow-text{background:linear-gradient(135deg,#a78bfa 0%,#60a5fa 50%,#34d399 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.glow-border{border:1px solid rgba(167,139,250,0.2);box-shadow:0 0 30px rgba(167,139,250,0.08)}
+.card-hover{transition:all .4s cubic-bezier(.4,0,.2,1)}
+.card-hover:hover{transform:translateY(-4px);border-color:rgba(167,139,250,.4);box-shadow:0 20px 60px rgba(167,139,250,.12)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+.animate-fade-up{animation:fadeUp .8s ease-out forwards;opacity:0}
+.delay-1{animation-delay:.1s}
+.delay-2{animation-delay:.2s}
+.delay-3{animation-delay:.3s}
+.nav-blur{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(10,10,15,.8)}
+.skill-tag{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.15);transition:all .3s ease}
+.skill-tag:hover{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.4);transform:scale(1.05)}
+.timeline-line{background:linear-gradient(to bottom,#a78bfa,#60a5fa,#34d399)}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#2563eb);transition:all .3s ease}
+.btn-primary:hover{transform:scale(1.02);box-shadow:0 10px 40px rgba(124,58,237,.4)}
+.btn-ghost{border:1px solid rgba(255,255,255,.15);transition:all .3s ease}
+.btn-ghost:hover{border-color:rgba(167,139,250,.5);background:rgba(167,139,250,.1)}
+.scroll-indicator{animation:float 2s ease-in-out infinite}
+.reveal{opacity:0;transform:translateY(30px);transition:all .8s ease-out}
+.reveal.active{opacity:1;transform:translateY(0)}
+a{color:inherit;text-decoration:none}
+section{padding:100px 24px;max-width:1100px;margin:0 auto}
+@media(max-width:768px){.grid-2{grid-template-columns:1fr!important}section{padding:60px 16px}}
+</style>
 </head>
 <body>
 
-<!-- 导航 -->
-<nav class="nav-blur" style="position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;">
-  <div style="font-weight:800;font-size:20px;letter-spacing:-0.5px;">
-    <span class="glow-text">YOUR</span><span style="color:#fff;">SPACE</span>
-  </div>
-  <div style="display:flex;gap:24px;font-size:14px;font-weight:500;">
-    <a href="#about" style="color:#9ca3af;transition:color 0.3s;" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#9ca3af'">关于</a>
-    <a href="#skills" style="color:#9ca3af;transition:color 0.3s;" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#9ca3af'">技能</a>
-    <a href="#works" style="color:#9ca3af;transition:color 0.3s;" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#9ca3af'">作品</a>
-    <a href="#timeline" style="color:#9ca3af;transition:color 0.3s;" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#9ca3af'">经历</a>
-    <a href="#contact" style="color:#9ca3af;transition:color 0.3s;" onmouseover="this.style.color='#a78bfa'" onmouseout="this.style.color='#9ca3af'">联系</a>
-  </div>
+<nav class="nav-blur" style="position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;display:flex;justify-content:space-between;align-items:center">
+<div style="font-weight:800;font-size:20px;letter-spacing:-.5px"><span class="glow-text">YOUR</span><span style="color:#fff">SPACE</span></div>
+<div style="display:flex;gap:20px;font-size:14px;font-weight:500">
+<a href="#about" style="color:#9ca3af">关于</a>
+<a href="#skills" style="color:#9ca3af">技能</a>
+<a href="#works" style="color:#9ca3af">作品</a>
+<a href="#timeline" style="color:#9ca3af">经历</a>
+<a href="#contact" style="color:#9ca3af">联系</a>
+</div>
 </nav>
 
-<!-- Hero -->
-<section style="min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden;">
-  <div style="position:absolute;top:20%;left:10%;width:300px;height:300px;background:rgba(167,139,250,0.08);border-radius:50%;filter:blur(80px);animation:float 6s ease-in-out infinite;"></div>
-  <div style="position:absolute;bottom:20%;right:10%;width:250px;height:250px;background:rgba(96,165,250,0.08);border-radius:50%;filter:blur(80px);animation:float 8s ease-in-out infinite reverse;"></div>
-  
-  <div style="position:relative;z-index:1;">
-    <div class="animate-fade-up" style="display:inline-block;padding:8px 20px;border-radius:50px;border:1px solid rgba(167,139,250,0.3);font-size:13px;color:#a78bfa;margin-bottom:32px;letter-spacing:2px;text-transform:uppercase;">
-      ✨ 欢迎来到我的数字宇宙
-    </div>
-    <h1 class="animate-fade-up delay-1 hero-title" style="font-size:clamp(40px,8vw,80px);font-weight:800;line-height:1.1;letter-spacing:-2px;margin-bottom:24px;">
-      我是 <span class="glow-text">你的名字</span><br>
-      <span style="color:#6b7280;font-weight:300;">创造数字体验的设计师</span>
-    </h1>
-    <p class="animate-fade-up delay-2" style="font-size:clamp(16px,2.5vw,20px);color:#9ca3af;max-width:600px;line-height:1.8;margin:0 auto 48px;font-weight:400;">
-      在这里，代码与美学交汇。我专注于打造令人难忘的数字产品，将复杂的技术转化为优雅的视觉语言。
-    </p>
-    <div class="animate-fade-up delay-3" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
-      <a href="#works" class="btn-primary" style="padding:14px 36px;border-radius:12px;color:#fff;font-weight:600;font-size:15px;">浏览作品 →</a>
-      <a href="#contact" class="btn-ghost" style="padding:14px 36px;border-radius:12px;color:#e8e8ec;font-weight:600;font-size:15px;">联系我</a>
-    </div>
-  </div>
-  <div class="scroll-indicator" style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);color:#6b7280;font-size:24px;">↓</div>
+<section style="min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden">
+<div style="position:absolute;top:20%;left:10%;width:300px;height:300px;background:rgba(167,139,250,.08);border-radius:50%;filter:blur(80px);animation:float 6s ease-in-out infinite"></div>
+<div style="position:absolute;bottom:20%;right:10%;width:250px;height:250px;background:rgba(96,165,250,.08);border-radius:50%;filter:blur(80px);animation:float 8s ease-in-out infinite reverse"></div>
+<div style="position:relative;z-index:1">
+<div class="animate-fade-up" style="display:inline-block;padding:8px 20px;border-radius:50px;border:1px solid rgba(167,139,250,.3);font-size:13px;color:#a78bfa;margin-bottom:32px;letter-spacing:2px;text-transform:uppercase">欢迎来到我的数字宇宙</div>
+<h1 class="animate-fade-up delay-1" style="font-size:clamp(36px,8vw,72px);font-weight:800;line-height:1.1;letter-spacing:-2px;margin-bottom:24px">我是 <span class="glow-text">你的名字</span><br><span style="color:#6b7280;font-weight:300">创造数字体验的设计师</span></h1>
+<p class="animate-fade-up delay-2" style="font-size:clamp(15px,2.5vw,18px);color:#9ca3af;max-width:560px;line-height:1.8;margin:0 auto 40px">在这里，代码与美学交汇。我专注于打造令人难忘的数字产品，将复杂的技术转化为优雅的视觉语言。</p>
+<div class="animate-fade-up delay-3" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+<a href="#works" class="btn-primary" style="padding:14px 32px;border-radius:12px;color:#fff;font-weight:600;font-size:15px">浏览作品</a>
+<a href="#contact" class="btn-ghost" style="padding:14px 32px;border-radius:12px;color:#e8e8ec;font-weight:600;font-size:15px">联系我</a>
+</div>
+</div>
+<div class="scroll-indicator" style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);color:#6b7280;font-size:24px">↓</div>
 </section>
 
-<!-- 关于 -->
-<section id="about" style="padding:120px 24px;max-width:1100px;margin:0 auto;">
-  <div class="reveal grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
-    <div>
-      <div style="font-size:13px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;font-weight:600;">关于我</div>
-      <h2 style="font-size:clamp(28px,4vw,42px);font-weight:700;line-height:1.2;margin-bottom:24px;letter-spacing:-1px;">
-        用设计讲述<br><span class="glow-text">每一个故事</span>
-      </h2>
-      <p style="color:#9ca3af;line-height:1.9;font-size:16px;margin-bottom:20px;">
-        我是一名全栈设计师与开发者，拥有5年以上的数字产品设计经验。我相信好的设计不仅仅是视觉上的美观，更是解决问题的艺术。
-      </p>
-      <p style="color:#9ca3af;line-height:1.9;font-size:16px;margin-bottom:32px;">
-        从概念到落地，我参与过20+商业项目，涵盖品牌设计、Web应用、移动端产品等多个领域。
-      </p>
-      <div style="display:flex;gap:40px;">
-        <div><div style="font-size:36px;font-weight:800;color:#fff;">5+
+<section id="about">
+<div class="reveal grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center">
+<div>
+<div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">关于我</div>
+<h2 style="font-size:clamp(26px,4vw,40px);font-weight:700;line-height:1.2;margin-bottom:20px;letter-spacing:-1px">用设计讲述<br><span class="glow-text">每一个故事</span></h2>
+<p style="color:#9ca3af;line-height:1.8;font-size:15px;margin-bottom:16px">我是一名全栈设计师与开发者，拥有5年以上的数字产品设计经验。我相信好的设计不仅仅是视觉上的美观，更是解决问题的艺术。</p>
+<p style="color:#9ca3af;line-height:1.8;font-size:15px;margin-bottom:28px">从概念到落地，我参与过20+商业项目，涵盖品牌设计、Web应用、移动端产品等多个领域。</p>
+<div style="display:flex;gap:32px">
+<div><div style="font-size:32px;font-weight:800;color:#fff">5+</div><div style="font-size:13px;color:#6b7280;margin-top:4px">年经验</div></div>
+<div><div style="font-size:32px;font-weight:800;color:#fff">20+</div><div style="font-size:13px;color:#6b7280;margin-top:4px">完成项目</div></div>
+<div><div style="font-size:32px;font-weight:800;color:#fff">50+</div><div style="font-size:13px;color:#6b7280;margin-top:4px">满意客户</div></div>
+</div>
+</div>
+<div style="position:relative">
+<div style="width:100%;aspect-ratio:1;border-radius:24px;background:linear-gradient(135deg,rgba(167,139,250,.2),rgba(96,165,250,.2));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+<div style="width:80%;height:80%;border-radius:20px;background:linear-gradient(135deg,#1e1b4b,#0f172a);display:flex;align-items:center;justify-content:center;font-size:72px">👤</div>
+<div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:rgba(167,139,250,.3);border-radius:50%;filter:blur(40px)"></div>
+<div style="position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;background:rgba(52,211,153,.2);border-radius:50%;filter:blur(30px)"></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="skills" style="background:rgba(255,255,255,.02)">
+<div style="max-width:900px;margin:0 auto;text-align:center">
+<div class="reveal">
+<div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">技能栈</div>
+<h2 style="font-size:clamp(26px,4vw,40px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">我的<span class="glow-text">超能力</span></h2>
+<p style="color:#6b7280;max-width:480px;margin:0 auto 48px;line-height:1.7">持续学习，不断进化。以下是我目前掌握的核心技能</p>
+</div>
+<div class="reveal" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#d8b4fe">UI/UX 设计</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#93c5fd">React / Next.js</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#6ee7b7">TypeScript</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#fca5a5">Figma</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#c4b5fd">Node.js</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#86efac">Python</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#fdba74">Three.js</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#a5b4fc">WebGL</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#f9a8d4">动效设计</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#5eead4">品牌设计</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#fcd34d">产品策略</span>
+<span class="skill-tag" style="padding:10px 20px;border-radius:50px;font-size:13px;font-weight:500;color:#e9d5ff">AI 应用</span>
+</div>
+</div>
+</section>
+
+<section id="works">
+<div class="reveal" style="text-align:center;margin-bottom:60px">
+<div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">精选作品</div>
+<h2 style="font-size:clamp(26px,4vw,40px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">近期<span class="glow-text">项目</span></h2>
+<p style="color:#6b7280;max-width:480px;margin:0 auto;line-height:1.7">每一个项目都是一次独特的挑战与创造</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03)">
+<div style="height:200px;background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center;font-size:56px">🚀</div>
+<div style="padding:24px">
+<div style="display:flex;gap:8px;margin-bottom:10px">
+<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(167,139,250,.15);color:#c4b5fd">Web App</span>
+<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(96,165,250,.15);color:#93c5fd">React</span>
+</div>
+<h3 style="font-size:18px;font-weight:700;margin-bottom:6px">星云数据平台</h3>
+<p style="color:#6b7280;font-size:13px;line-height:1.7">为企业级客户打造的数据可视化仪表盘，支持实时数据流与多维度分析。</p>
+</div>
+</div>
+<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03)">
+<div style="height:200px;background:linear-gradient(135deg,#064e3b,#065f46);display:flex;align-items:center;justify-content:center;font-size:56px">🌿</div>
+<div style="padding:24px">
+<div style="display:flex;gap:8px;margin-bottom:10px">
+<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(52,211,153,.15);color:#6ee7b7">Mobile</span>
+<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(251,191,36,.15);color:#fcd34d">Flutter</span>
+</div>
+<h3 style="font-size:18px;font-weight:700;margin-bottom:6px">绿意生活 App</h3>
+<p style="color:#6b7280;font-size:13px;line-height:1.7">植物养护与社区分享应用，帮助用户记录和分享园艺生活的点滴。</p>
+</div>
+</div>
+<div class="reveal card-hover glow-border" style="border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03)">
+<div style="height:200px;background:linear-gradient(135deg,#7c2d12,#9a3412);display:flex;align-items:center;justify-content:center;font-size:56px">🎨</div>
+<div style="padding:24px">
+<div style="display:flex;gap:8px;margin-bottom:10px">
+<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(248,113,113,.15);color:#fca5a5">Brand</span>
+<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(167,139,250,.15);color:#c4b5fd">Design</span>
+</div>
+<h3 style="font-size:18px;font-weight:700;margin-bottom:6px">极光咖啡品牌</h3>
+<p style="color:#6b7280;font-size:13px;line-height:1.7">为精品咖啡连锁品牌打造的全套视觉识别系统，包含Logo、包装与店面设计。</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="timeline" style="max-width:800px">
+<div class="reveal" style="text-align:center;margin-bottom:60px">
+<div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">成长轨迹</div>
+<h2 style="font-size:clamp(26px,4vw,40px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">我的<span class="glow-text">旅程</span></h2>
+</div>
+<div style="position:relative;padding-left:36px">
+<div class="timeline-line" style="position:absolute;left:10px;top:0;bottom:0;width:2px;border-radius:2px"></div>
+<div class="reveal" style="position:relative;margin-bottom:40px">
+<div style="position:absolute;left:-30px;top:4px;width:10px;height:10px;background:#a78bfa;border-radius:50%;box-shadow:0 0 16px rgba(167,139,250,.5)"></div>
+<div style="font-size:12px;color:#a78bfa;font-weight:600;margin-bottom:4px">2024 - 至今</div>
+<h3 style="font-size:18px;font-weight:700;margin-bottom:6px">高级产品设计师</h3>
+<div style="color:#6b7280;font-size:13px;margin-bottom:6px">某知名科技公司</div>
+<p style="color:#9ca3af;font-size:13px;line-height:1.7">负责核心产品线的用户体验设计，带领3人设计团队，主导了多个百万级用户产品的设计改版。</p>
+</div>
+<div class="reveal" style="position:relative;margin-bottom:40px">
+<div style="position:absolute;left:-30px;top:4px;width:10px;height:10px;background:#60a5fa;border-radius:50%;box-shadow:0 0 16px rgba(96,165,250,.5)"></div>
+<div style="font-size:12px;color:#60a5fa;font-weight:600;margin-bottom:4px">2021 - 2024</div>
+<h3 style="font-size:18px;font-weight:700;margin-bottom:6px">全栈设计师</h3>
+<div style="color:#6b7280;font-size:13px;margin-bottom:6px">创意工作室</div>
+<p style="color:#9ca3af;font-size:13px;line-height:1.7">独立负责从品牌策略到前端开发的全流程，服务了20+客户，涵盖电商、SaaS、金融科技等领域。</p>
+</div>
+<div class="reveal" style="position:relative">
+<div style="position:absolute;left:-30px;top:4px;width:10px;height:10px;background:#34d399;border-radius:50%;box-shadow:0 0 16px rgba(52,211,153,.5)"></div>
+<div style="font-size:12px;color:#34d399;font-weight:600;margin-bottom:4px">2019 - 2021</div>
+<h3 style="font-size:18px;font-weight:700;margin-bottom:6px">UI 设计师</h3>
+<div style="color:#6b7280;font-size:13px;margin-bottom:6px">互联网创业公司</div>
+<p style="color:#9ca3af;font-size:13px;line-height:1.7">从0到1参与产品搭建，积累了移动端与Web端设计的实战经验，培养了产品思维。</p>
+</div>
+</div>
+</section>
+
+<section id="contact" style="max-width:700px;text-align:center">
+<div class="reveal">
+<div style="font-size:12px;color:#a78bfa;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;font-weight:600">保持联系</div>
+<h2 style="font-size:clamp(26px,4vw,40px);font-weight:700;margin-bottom:12px;letter-spacing:-1px">让我们一起<span class="glow-text">创造</span></h2>
+<p style="color:#6b7280;max-width:480px;margin:0 auto 40px;line-height:1.7">无论是项目合作、技术交流，还是单纯想打个招呼，我都很期待收到你的消息。</p>
+<div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
+<a href="mailto:your@email.com" class="btn-primary" style="padding:14px 36px;border-radius:14px;color:#fff;font-weight:600;font-size:15px">发送邮件</a>
+<a href="#" class="btn-ghost" style="padding:14px 36px;border-radius:14px;color:#e8e8ec;font-weight:600;font-size:15px">微信联系</a>
+</div>
+<div style="display:flex;gap:16px;justify-content:center">
+<a href="#" style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px">🐙</a>
+<a href="#" style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px">💼</a>
+<a href="#" style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px">🐦</a>
+<a href="#" style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:18px">📸</a>
+</div>
+</div>
+</section>
+
+<footer style="padding:32px 24px;text-align:center;border-top:1px solid rgba(255,255,255,.05)">
+<p style="color:#4b5563;font-size:13px">2026 Your Name. 用代码构建。</p>
+</footer>
+
+<script>
+const observer=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('active')})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>
