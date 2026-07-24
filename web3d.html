@@ -70,6 +70,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'In
 .toast{position:fixed;top:100px;left:50%;transform:translateX(-50%) translateY(-20px);padding:10px 20px;border-radius:10px;background:rgba(0,0,0,.9);border:1px solid rgba(248,113,113,.3);color:#f87171;font-size:13px;z-index:150;opacity:0;transition:all .3s;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* 图例/层级指示 */
+.zoom-indicator{position:fixed;bottom:16px;left:16px;z-index:50;background:rgba(0,0,0,.8);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:8px 12px;font-size:11px;color:#9ca3af;backdrop-filter:blur(10px)}
+.zoom-indicator span{color:#a78bfa;font-weight:600}
+
 @media(max-width:768px){
 .search-box{min-width:280px;top:48px}
 .search-box input{font-size:13px}
@@ -78,6 +82,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'In
 .city-item{font-size:10px;padding:4px 6px}
 .detail-panel{width:100%;right:-100%}
 .controls{bottom:10px;right:10px}
+.zoom-indicator{bottom:60px;left:8px;font-size:10px;padding:6px 10px}
 }
 </style>
 </head>
@@ -136,6 +141,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'In
 <div class="ctrl-btn" id="btnPanel" title="详情">ℹ</div>
 </div>
 
+<div class="zoom-indicator" id="zoomIndicator">当前层级: <span id="zoomLevelText">影像图</span></div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
@@ -177,10 +184,119 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 container.appendChild(renderer.domElement);
 
+// ===== 地球纹理管理（影像图 + 矢量图切换）=====
+const EARTH_RADIUS = 100;
+const ZOOM_VECTOR_THRESHOLD = 180; // 相机距离小于此值时切换到矢量图
+
+const textureLoader = new THREE.TextureLoader();
+const textureCache = {};
+
+function loadTexture(url) {
+  if (textureCache[url]) return Promise.resolve(textureCache[url]);
+  return new Promise((resolve, reject) => {
+    textureLoader.load(url, 
+      (tex) => { textureCache[url] = tex; resolve(tex); },
+      undefined,
+      (err) => reject(err)
+    );
+  });
+}
+
+// 影像图纹理（卫星图）
+const IMAGE_URL = 'https://unpkg.com/three-globe@2.30.0/example/img/earth-blue-marble.jpg';
+const BUMP_URL = 'https://unpkg.com/three-globe@2.30.0/example/img/earth-topology.png';
+
+// 矢量图纹理（使用 CartoDB Positron 浅色矢量底图，投影到球面）
+// 通过 canvas 动态生成矢量风格纹理
+function createVectorTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 2048;
+  canvas.height = 1024;
+  const ctx = canvas.getContext('2d');
+  
+  // 海洋背景
+  ctx.fillStyle = '#0a1628';
+  ctx.fillRect(0, 0, 2048, 1024);
+  
+  // 绘制简化的大陆轮廓（使用预绘制的矢量风格）
+  // 实际项目中可以使用更精细的 GeoJSON 数据
+  ctx.strokeStyle = 'rgba(167, 139, 250, 0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
+  
+  // 绘制经纬网格
+  ctx.strokeStyle = 'rgba(100, 116, 139, 0.15)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 36; i++) {
+    const x = (i / 36) * 2048;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 1024); ctx.stroke();
+  }
+  for (let i = 0; i <= 18; i++) {
+    const y = (i / 18) * 1024;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(2048, y); ctx.stroke();
+  }
+  
+  // 国家边界简化绘制（使用点状虚线模拟）
+  ctx.strokeStyle = 'rgba(167, 139, 250, 0.35)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  
+  // 绘制一些主要大陆轮廓的简化版
+  const landmasses = [
+    // 亚洲东部（中国区域高亮）
+    {pts:[[1050,380],[1150,360],[1250,380],[1300,420],[1280,480],[1200,500],[1100,480],[1050,440]]},
+    // 欧洲
+    {pts:[[900,280],[980,260],[1020,290],[1000,340],[950,350],[900,320]]},
+    // 北美
+    {pts:[[300,250],[450,220],[550,280],[500,380],[400,400],[300,350],[280,300]]},
+    // 南美
+    {pts:[[420,480],[500,470],[520,550],[480,650],[420,680],[400,600],[410,520]]},
+    // 非洲
+    {pts:[[880,420],[980,400],[1020,480],[980,580],[920,600],[880,550],[860,480]]},
+    // 澳洲
+    {pts:[[1300,600],[1420,590],[1450,650],[1380,680],[1300,660]]},
+  ];
+  
+  landmasses.forEach(land => {
+    ctx.beginPath();
+    ctx.moveTo(land.pts[0][0], land.pts[0][1]);
+    for (let i = 1; i < land.pts.length; i++) {
+      ctx.lineTo(land.pts[i][0], land.pts[i][1]);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  });
+  
+  ctx.setLineDash([]);
+  
+  // 城市标记（发光点）
+  cities.forEach(city => {
+    const x = ((city.lng + 180) / 360) * 2048;
+    const y = ((90 - city.lat) / 180) * 1024;
+    const color = city.type === 'cn' ? '#ff6b6b' : '#4ecdc4';
+    
+    // 外发光
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, 15);
+    grad.addColorStop(0, color);
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(x, y, 15, 0, Math.PI * 2); ctx.fill();
+    
+    // 中心点
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+  });
+  
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
 // ===== ThreeGlobe =====
 const globe = new ThreeGlobe()
-  .globeImageUrl('https://unpkg.com/three-globe@2.30.0/example/img/earth-blue-marble.jpg')
-  .bumpImageUrl('https://unpkg.com/three-globe@2.30.0/example/img/earth-topology.png')
+  .globeImageUrl(IMAGE_URL)
+  .bumpImageUrl(BUMP_URL)
   .showAtmosphere(true)
   .atmosphereColor('#3b82f6')
   .atmosphereAltitude(0.15)
@@ -203,6 +319,64 @@ const globe = new ThreeGlobe()
 
 scene.add(globe);
 
+// 预生成矢量纹理
+const vectorTexture = createVectorTexture();
+let isVectorMode = false;
+
+// 切换地球纹理
+function updateGlobeTexture() {
+  const distance = zoom;
+  const shouldBeVector = distance < ZOOM_VECTOR_THRESHOLD;
+  
+  if (shouldBeVector !== isVectorMode) {
+    isVectorMode = shouldBeVector;
+    if (isVectorMode) {
+      globe.globeImageUrl(null); // 清除以使用自定义
+      // 通过修改内部材质来实现切换
+      setTimeout(() => {
+        if (globe._buildMaterial) {
+          // 使用 canvas 生成的矢量纹理
+          globe.globeImageUrl(vectorTexture.image.toDataURL ? vectorTexture.image.toDataURL() : IMAGE_URL);
+        }
+      }, 0);
+      // 直接替换纹理更可靠
+      globe._buildMaterial = function() {
+        const material = new THREE.MeshPhongMaterial({
+          map: vectorTexture,
+          bumpMap: textureCache[BUMP_URL] || null,
+          bumpScale: 0.05,
+          specular: new THREE.Color(0x111111),
+          shininess: 10
+        });
+        return material;
+      };
+      if (globe.__globeObj) {
+        globe.__globeObj.material = globe._buildMaterial();
+      }
+    } else {
+      // 恢复影像图
+      globe.globeImageUrl(IMAGE_URL);
+    }
+    
+    document.getElementById('zoomLevelText').textContent = isVectorMode ? '矢量图' : '影像图';
+  }
+}
+
+// 更简洁的纹理切换方案：通过修改 globe 的 globeImageUrl
+function switchToVector() {
+  // 使用 data URL 方式注入 canvas 纹理
+  const dataUrl = createVectorTexture().image.toDataURL('image/png');
+  globe.globeImageUrl(dataUrl);
+  isVectorMode = true;
+  document.getElementById('zoomLevelText').textContent = '矢量图';
+}
+
+function switchToImage() {
+  globe.globeImageUrl(IMAGE_URL);
+  isVectorMode = false;
+  document.getElementById('zoomLevelText').textContent = '影像图';
+}
+
 // 星空背景
 const starGeo = new THREE.BufferGeometry();
 const starCount = 3000;
@@ -215,8 +389,8 @@ scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({size:0.5,color:0xf
 let autoRotate = true;
 let isDragging = false;
 let prevPos = {x:0,y:0};
-let rot = {x:0,y:0};
-let targetRot = {x:0.3,y:0};
+let rot = {x:25,y:-105}; // 默认视角：纬度25°N，经度105°E（中国中心）
+let targetRot = {x:25,y:-105};
 let zoom = 220;
 let targetZoom = 220;
 
@@ -273,56 +447,113 @@ function flyTo(lat, lng, distance, duration=1500) {
   requestAnimationFrame(animate);
 }
 
-// ===== 搜索功能 =====
+// ===== 搜索功能（修复版）=====
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
 const searchResults = document.getElementById('searchResults');
 let searchCache = {};
 let searchTimeout;
+let currentAbortController = null;
 
 async function doSearch(query) {
-  if(!query.trim())return;
+  if(!query.trim()) {
+    searchResults.classList.remove('show');
+    return;
+  }
+  
+  // 取消之前的请求
+  if (currentAbortController) {
+    currentAbortController.abort();
+  }
+  currentAbortController = new AbortController();
+  
   searchBtn.disabled = true;
   searchBtn.textContent = '搜索中...';
+  searchResults.classList.remove('show');
 
   try {
-    // 先搜索预设城市
-    const presetMatches = cities.filter(c => c.name.includes(query) || query.includes(c.name));
+    const trimmedQuery = query.trim();
+    const lowerQuery = trimmedQuery.toLowerCase();
+    
+    // 先搜索预设城市（模糊匹配）
+    const presetMatches = cities.filter(c => 
+      c.name.includes(trimmedQuery) || 
+      trimmedQuery.includes(c.name) ||
+      c.desc.includes(trimmedQuery)
+    );
 
-    // 调用Nominatim API
-    const cacheKey = query.toLowerCase();
-    let apiResults = searchCache[cacheKey];
-
-    if(!apiResults) {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&accept-language=zh-CN`, {
-        headers: {'User-Agent': 'HailongGIS-Web3D/1.0'}
-      });
-      apiResults = await res.json();
-      searchCache[cacheKey] = apiResults;
+    // 调用 Nominatim API
+    let apiResults = [];
+    const cacheKey = lowerQuery;
+    
+    if(searchCache[cacheKey]) {
+      apiResults = searchCache[cacheKey];
+    } else {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(trimmedQuery)}&format=json&limit=8&accept-language=zh-CN`, 
+          {
+            headers: {'User-Agent': 'HailongGIS-Web3D/1.0'},
+            signal: currentAbortController.signal
+          }
+        );
+        if (!res.ok) throw new Error('Network error');
+        apiResults = await res.json();
+        searchCache[cacheKey] = apiResults;
+      } catch (apiErr) {
+        if (apiErr.name !== 'AbortError') {
+          console.warn('API search failed:', apiErr);
+        }
+      }
     }
 
-    displayResults([...presetMatches.map(c=>({...c,display_name:c.desc,osm_type:'preset'})), ...apiResults]);
-  } catch(e) {
-    showToast('搜索失败，请检查网络');
-  }
+    // 合并结果：预设城市优先
+    const mergedResults = [
+      ...presetMatches.map(c => ({
+        name: c.name,
+        display_name: c.desc,
+        lat: c.lat,
+        lon: c.lng,  // 统一使用 lon
+        type: c.type === 'cn' ? '中国城市' : '世界城市',
+        source: 'preset'
+      })),
+      ...apiResults.map(r => ({
+        ...r,
+        source: 'api'
+      }))
+    ];
 
-  searchBtn.disabled = false;
-  searchBtn.textContent = '🔍 搜索';
+    displayResults(mergedResults);
+  } catch(e) {
+    console.error('Search error:', e);
+    showToast('搜索失败，请检查网络');
+  } finally {
+    searchBtn.disabled = false;
+    searchBtn.textContent = '🔍 搜索';
+  }
 }
 
 function displayResults(results) {
   searchResults.innerHTML = '';
-  if(results.length===0){searchResults.classList.remove('show');return;}
+  if(!results || results.length === 0) {
+    searchResults.classList.remove('show');
+    return;
+  }
 
-  results.slice(0,8).forEach(r=>{
+  results.slice(0, 10).forEach(r => {
     const item = document.createElement('div');
     item.className = 'search-result-item';
-    const name = r.name || r.display_name.split(',')[0];
+    
+    const name = r.name || (r.display_name ? r.display_name.split(',')[0] : '未知');
     const addr = r.display_name || '';
     const lat = parseFloat(r.lat);
     const lon = parseFloat(r.lon || r.lng);
+    
+    // 跳过无效坐标
+    if (isNaN(lat) || isNaN(lon)) return;
+    
     item.innerHTML = `<div class="name">${name}</div><div class="addr">${addr}</div>`;
-    item.addEventListener('click',()=>{
+    item.addEventListener('click', () => {
       searchResults.classList.remove('show');
       searchInput.value = name;
       flyTo(lat, lon, 150);
@@ -331,23 +562,33 @@ function displayResults(results) {
     searchResults.appendChild(item);
   });
 
-  searchResults.classList.add('show');
+  if (searchResults.children.length > 0) {
+    searchResults.classList.add('show');
+  }
 }
 
-searchBtn.addEventListener('click',()=>doSearch(searchInput.value));
-searchInput.addEventListener('keydown',e=>{if(e.key==='Enter')doSearch(searchInput.value)});
-searchInput.addEventListener('input',()=>{
+searchBtn.addEventListener('click', () => doSearch(searchInput.value));
+searchInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter') {
+    e.preventDefault();
+    doSearch(searchInput.value);
+  }
+});
+
+// 修复：input 事件防抖，避免频繁请求
+searchInput.addEventListener('input', () => {
   clearTimeout(searchTimeout);
-  if(searchInput.value.length>=2){
-    searchTimeout=setTimeout(()=>doSearch(searchInput.value),500);
-  } else {
+  const val = searchInput.value.trim();
+  if(val.length >= 2) {
+    searchTimeout = setTimeout(() => doSearch(val), 400);
+  } else if (val.length === 0) {
     searchResults.classList.remove('show');
   }
 });
 
 // 点击外部关闭搜索结果
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.search-box')&&!e.target.closest('.search-results')){
+document.addEventListener('click', e => {
+  if(!e.target.closest('.search-box') && !e.target.closest('.search-results')) {
     searchResults.classList.remove('show');
   }
 });
@@ -366,56 +607,61 @@ function showDetail(name, addr, lat, lng, type) {
   detailPanel.classList.add('open');
 
   // 初始化或更新Leaflet地图
-  setTimeout(()=>{
-    if(leafletMap){leafletMap.remove();}
-    leafletMap = L.map('leafletMap').setView([lat,lng],13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-      attribution:'&copy; OpenStreetMap',
-      maxZoom:19
+  setTimeout(() => {
+    if(leafletMap) { leafletMap.remove(); }
+    leafletMap = L.map('leafletMap').setView([lat, lng], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap',
+      maxZoom: 19
     }).addTo(leafletMap);
-    L.marker([lat,lng]).addTo(leafletMap).bindPopup(name).openPopup();
-  },300);
+    L.marker([lat, lng]).addTo(leafletMap).bindPopup(name).openPopup();
+  }, 300);
 }
 
-document.getElementById('panelClose').addEventListener('click',()=>{
+document.getElementById('panelClose').addEventListener('click', () => {
   detailPanel.classList.remove('open');
 });
 
 // ===== 城市列表 =====
 const cityList = document.getElementById('cityList');
-cities.forEach(city=>{
+cities.forEach(city => {
   const item = document.createElement('div');
   item.className = 'city-item';
   item.innerHTML = `<div class="city-dot ${city.type==='world'?'world':''}"></div>${city.name}`;
-  item.addEventListener('click',()=>{
-    flyTo(city.lat,city.lng,150);
-    showDetail(city.name,city.desc,city.lat,city.lng,city.type==='cn'?'中国城市':'世界城市');
+  item.addEventListener('click', () => {
+    flyTo(city.lat, city.lng, 150);
+    showDetail(city.name, city.desc, city.lat, city.lng, city.type==='cn'?'中国城市':'世界城市');
   });
   cityList.appendChild(item);
 });
 
 // ===== 控制按钮 =====
-document.getElementById('btnReset').addEventListener('click',()=>{
-  targetRot={x:0.3,y:0};targetZoom=220;autoRotate=true;detailPanel.classList.remove('open');
+document.getElementById('btnReset').addEventListener('click', () => {
+  targetRot = {x:25, y:-105}; // 重置回中国视角
+  targetZoom = 220;
+  autoRotate = true;
+  detailPanel.classList.remove('open');
 });
-document.getElementById('btnZoomIn').addEventListener('click',()=>targetZoom=Math.max(120,targetZoom-30));
-document.getElementById('btnZoomOut').addEventListener('click',()=>targetZoom=Math.min(400,targetZoom+30));
-document.getElementById('btnRotate').addEventListener('click',()=>autoRotate=!autoRotate);
-document.getElementById('btnPanel').addEventListener('click',()=>detailPanel.classList.toggle('open'));
+document.getElementById('btnZoomIn').addEventListener('click', () => targetZoom = Math.max(120, targetZoom - 30));
+document.getElementById('btnZoomOut').addEventListener('click', () => targetZoom = Math.min(400, targetZoom + 30));
+document.getElementById('btnRotate').addEventListener('click', () => autoRotate = !autoRotate);
+document.getElementById('btnPanel').addEventListener('click', () => detailPanel.classList.toggle('open'));
 
 // ===== Toast =====
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 // ===== 动画循环 =====
+let frameCount = 0;
 function animate() {
   requestAnimationFrame(animate);
+  frameCount++;
 
-  if(autoRotate&&!isDragging) targetRot.y += 0.05;
+  if(autoRotate && !isDragging) targetRot.y += 0.05;
 
   rot.x += (targetRot.x - rot.x) * 0.05;
   rot.y += (targetRot.y - rot.y) * 0.05;
@@ -428,18 +674,30 @@ function animate() {
   camera.position.z = zoom * Math.sin(phi) * Math.sin(theta);
   camera.lookAt(0,0,0);
 
+  // 每 10 帧检查一次是否需要切换纹理（避免每帧都检查）
+  if (frameCount % 10 === 0) {
+    const shouldBeVector = zoom < ZOOM_VECTOR_THRESHOLD;
+    if (shouldBeVector !== isVectorMode) {
+      if (shouldBeVector) {
+        switchToVector();
+      } else {
+        switchToImage();
+      }
+    }
+  }
+
   renderer.render(scene, camera);
 }
 
 // ===== 窗口调整 =====
-window.addEventListener('resize',()=>{
-  camera.aspect = window.innerWidth/window.innerHeight;
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
 // ===== 加载完成 =====
-setTimeout(()=>document.getElementById('loading').classList.add('hidden'),2000);
+setTimeout(() => document.getElementById('loading').classList.add('hidden'), 2000);
 animate();
 </script>
 
