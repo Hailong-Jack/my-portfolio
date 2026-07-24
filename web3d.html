@@ -6,31 +6,39 @@
 <title>SmartGIS Web3D - 海龙空间智能</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0f;color:#e8e8ec;font-family:'Inter',-apple-system,sans-serif;overflow:hidden}
+body{background:#020204;color:#e8e8ec;font-family:'Inter',-apple-system,sans-serif;overflow:hidden}
 #canvas-container{position:fixed;inset:0;z-index:1}
-#ui-layer{position:fixed;inset:0;z-index:10;pointer-events:none}
-#ui-layer > *{pointer-events:auto}
-.nav-bar{position:fixed;top:0;left:0;right:0;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(20px);background:rgba(10,10,15,.85);border-bottom:1px solid rgba(255,255,255,.05);z-index:20}
-.nav-bar a{color:#9ca3af;text-decoration:none;font-size:14px;font-weight:500;transition:color .3s}
+.nav-bar{position:fixed;top:0;left:0;right:0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(20px);background:rgba(2,2,4,.9);border-bottom:1px solid rgba(255,255,255,.05);z-index:20}
+.nav-bar a{color:#9ca3af;text-decoration:none;font-size:13px;font-weight:500;transition:color .3s}
 .nav-bar a:hover{color:#a78bfa}
-.logo{font-weight:800;font-size:18px;letter-spacing:-.5px;background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.info-panel{position:fixed;bottom:24px;left:24px;padding:20px 24px;border-radius:16px;background:rgba(10,10,15,.8);border:1px solid rgba(167,139,250,.2);backdrop-filter:blur(10px);max-width:300px;z-index:20}
-.info-panel h2{font-size:18px;font-weight:700;margin-bottom:8px;color:#fff}
-.info-panel p{font-size:13px;color:#9ca3af;line-height:1.7;margin-bottom:12px}
-.info-panel .stats{display:flex;gap:20px}
-.info-panel .stats div{text-align:center}
-.info-panel .stats div .num{font-size:22px;font-weight:800;color:#a78bfa}
-.info-panel .stats div .label{font-size:11px;color:#6b7280;margin-top:2px}
-.controls-hint{position:fixed;bottom:24px;right:24px;padding:14px 18px;border-radius:12px;background:rgba(10,10,15,.7);border:1px solid rgba(255,255,255,.08);font-size:12px;color:#6b7280;z-index:20}
-.loading{position:fixed;inset:0;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity .5s}
+.logo{font-weight:800;font-size:16px;background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.city-panel{position:fixed;top:50%;left:20px;transform:translateY(-50%);padding:16px;border-radius:16px;background:rgba(2,2,4,.85);border:1px solid rgba(167,139,250,.15);backdrop-filter:blur(10px);max-width:200px;z-index:20;max-height:70vh;overflow-y:auto}
+.city-panel h3{font-size:13px;color:#a78bfa;margin-bottom:12px;letter-spacing:1px;text-transform:uppercase}
+.city-item{padding:8px 12px;margin-bottom:4px;border-radius:8px;cursor:pointer;transition:all .3s;font-size:13px;color:#9ca3af;display:flex;align-items:center;gap:8px}
+.city-item:hover{background:rgba(167,139,250,.15);color:#fff}
+.city-item.active{background:rgba(167,139,250,.2);color:#fff;border:1px solid rgba(167,139,250,.3)}
+.city-dot{width:8px;height:8px;border-radius:50%;background:#a78bfa;box-shadow:0 0 8px #a78bfa}
+.city-dot.world{background:#60a5fa;box-shadow:0 0 8px #60a5fa}
+.info-popup{position:fixed;padding:16px 20px;border-radius:16px;background:rgba(2,2,4,.9);border:1px solid rgba(167,139,250,.2);backdrop-filter:blur(10px);z-index:25;pointer-events:none;opacity:0;transition:opacity .3s;max-width:240px}
+.info-popup.show{opacity:1}
+.info-popup h4{font-size:15px;font-weight:700;margin-bottom:6px;color:#fff}
+.info-popup p{font-size:12px;color:#9ca3af;line-height:1.6}
+.info-popup .coords{font-size:11px;color:#6b7280;margin-top:6px;font-family:monospace}
+.controls{position:fixed;bottom:20px;right:20px;display:flex;gap:8px;z-index:20}
+.ctrl-btn{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#9ca3af;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s}
+.ctrl-btn:hover{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.4);color:#fff}
+.loading{position:fixed;inset:0;background:#020204;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity .8s}
 .loading.hidden{opacity:0;pointer-events:none}
-.loading-spinner{width:48px;height:48px;border:2px solid rgba(167,139,250,.2);border-top-color:#a78bfa;border-radius:50%;animation:spin 1s linear infinite}
-.loading-text{margin-top:16px;font-size:14px;color:#9ca3af;letter-spacing:2px}
+.loading-spinner{width:40px;height:40px;border:2px solid rgba(167,139,250,.2);border-top-color:#a78bfa;border-radius:50%;animation:spin 1s linear infinite}
+.loading-text{margin-top:14px;font-size:13px;color:#6b7280;letter-spacing:2px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.glow-text{background:linear-gradient(135deg,#a78bfa 0%,#60a5fa 50%,#34d399 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tooltip{position:fixed;padding:6px 12px;border-radius:6px;background:rgba(167,139,250,.2);border:1px solid rgba(167,139,250,.3);color:#fff;font-size:12px;pointer-events:none;z-index:30;opacity:0;transition:opacity .2s;white-space:nowrap}
+.tooltip.show{opacity:1}
 @media(max-width:768px){
-.info-panel{bottom:16px;left:16px;right:16px;max-width:none}
-.controls-hint{display:none}
+.city-panel{left:10px;top:auto;bottom:70px;transform:none;max-width:160px;padding:12px;max-height:30vh}
+.city-panel h3{font-size:11px}
+.city-item{font-size:11px;padding:6px 8px}
+.controls{bottom:10px;right:10px}
 }
 </style>
 </head>
@@ -38,297 +46,521 @@ body{background:#0a0a0f;color:#e8e8ec;font-family:'Inter',-apple-system,sans-ser
 
 <div class="loading" id="loading">
 <div class="loading-spinner"></div>
-<div class="loading-text">正在加载三维引擎...</div>
+<div class="loading-text">加载三维地球引擎...</div>
 </div>
 
 <div class="nav-bar">
-<div style="display:flex;align-items:center;gap:10px">
-<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="url(#lg1)" stroke-width="2"/><circle cx="16" cy="16" r="6" fill="url(#lg1)"/><defs><linearGradient id="lg1" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs></svg>
-<span class="logo">海龙空间智能</span>
+<div style="display:flex;align-items:center;gap:8px">
+<svg width="24" height="24" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="url(#lg1)" stroke-width="2"/><circle cx="16" cy="16" r="6" fill="url(#lg1)"/><defs><linearGradient id="lg1" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#34d399"/></linearGradient></defs></svg>
+<span class="logo">海龙空间智能 · Web3D</span>
 </div>
 <a href="index.html">← 返回主页</a>
 </div>
 
 <div id="canvas-container"></div>
 
-<div class="info-panel">
-<h2>SmartGIS <span class="glow-text">Web3D</span></h2>
-<p>无插件、轻量级三维在线应用平台。支持海量三维数据加载与实时渲染。</p>
-<div class="stats">
-<div><div class="num" id="stat-points">0</div><div class="label">数据节点</div></div>
-<div><div class="num" id="stat-fps">60</div><div class="label">FPS</div></div>
-<div><div class="num">WebGL</div><div class="label">渲染引擎</div></div>
-</div>
+<div class="city-panel" id="cityPanel">
+<h3>📍 城市节点</h3>
+<div id="cityList"></div>
 </div>
 
-<div class="controls-hint">
-🖱️ 拖拽旋转 &nbsp;|&nbsp; 🔍 滚轮缩放 &nbsp;|&nbsp; 👆 触摸操作
+<div class="info-popup" id="infoPopup">
+<h4 id="popupTitle">城市名称</h4>
+<p id="popupDesc">描述</p>
+<div class="coords" id="popupCoords">经纬度</div>
 </div>
+
+<div class="controls">
+<div class="ctrl-btn" id="btnReset" title="重置视角">⌖</div>
+<div class="ctrl-btn" id="btnZoomIn" title="放大">+</div>
+<div class="ctrl-btn" id="btnZoomOut" title="缩小">−</div>
+<div class="ctrl-btn" id="btnRotate" title="自动旋转">↻</div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ===== Three.js 3D场景 =====
+// ===== 城市数据 =====
+const cities = [
+// 中国
+{name:'北京',lat:39.9,lon:116.4,desc:'中国首都，政治文化中心',type:'cn'},
+{name:'上海',lat:31.2,lon:121.5,desc:'国际金融中心，长三角龙头',type:'cn'},
+{name:'广州',lat:23.1,lon:113.3,desc:'南方门户，粤港澳大湾区核心',type:'cn'},
+{name:'深圳',lat:22.5,lon:114.1,desc:'科技创新之都',type:'cn'},
+{name:'杭州',lat:30.3,lon:120.2,desc:'数字经济第一城',type:'cn'},
+{name:'成都',lat:30.7,lon:104.1,desc:'西部中心城市，天府之国',type:'cn'},
+{name:'武汉',lat:30.6,lon:114.3,desc:'九省通衢，中部崛起核心',type:'cn'},
+{name:'西安',lat:34.3,lon:108.9,desc:'古都新貌，一带一路起点',type:'cn'},
+{name:'南京',lat:32.1,lon:118.8,desc:'六朝古都，创新名城',type:'cn'},
+{name:'重庆',lat:29.6,lon:106.5,desc:'山城雾都，西部直辖市',type:'cn'},
+// 世界
+{name:'纽约',lat:40.7,lon:-74.0,desc:'世界金融中心',type:'world'},
+{name:'伦敦',lat:51.5,lon:-0.1,desc:'欧洲金融中心',type:'world'},
+{name:'东京',lat:35.7,lon:139.7,desc:'亚洲科技中心',type:'world'},
+{name:'悉尼',lat:-33.9,lon:151.2,desc:'南半球门户',type:'world'},
+];
+
+// ===== 经纬度转3D坐标 =====
+function latLonToVector3(lat, lon, radius) {
+const phi = (90 - lat) * Math.PI / 180;
+const theta = (lon + 180) * Math.PI / 180;
+return new THREE.Vector3(
+-radius * Math.sin(phi) * Math.cos(theta),
+radius * Math.cos(phi),
+radius * Math.sin(phi) * Math.sin(theta)
+);
+}
+
+// ===== Three.js 场景 =====
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x0a0a0f, 0.02);
+scene.fog = new THREE.FogExp2(0x020204, 0.015);
 
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 3.5;
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 4);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x0a0a0f, 1);
+renderer.setClearColor(0x020204, 1);
 container.appendChild(renderer.domElement);
 
-// ===== 地球主体 =====
+// ===== 生成地球纹理（Canvas）=====
+function createEarthTexture() {
+const canvas = document.createElement('canvas');
+canvas.width = 2048;
+canvas.height = 1024;
+const ctx = canvas.getContext('2d');
+
+// 海洋背景
+const oceanGrad = ctx.createLinearGradient(0, 0, 0, 1024);
+oceanGrad.addColorStop(0, '#0a1628');
+oceanGrad.addColorStop(0.5, '#0d1f3c');
+oceanGrad.addColorStop(1, '#0a1628');
+ctx.fillStyle = oceanGrad;
+ctx.fillRect(0, 0, 2048, 1024);
+
+// 绘制简化大陆轮廓（使用路径）
+ctx.fillStyle = '#1a3a5c';
+ctx.strokeStyle = '#2a5a8c';
+ctx.lineWidth = 2;
+
+// 亚洲
+ctx.beginPath();
+ctx.moveTo(1100, 250); ctx.lineTo(1300, 200); ctx.lineTo(1450, 280); ctx.lineTo(1500, 400);
+ctx.lineTo(1450, 500); ctx.lineTo(1350, 550); ctx.lineTo(1200, 500); ctx.lineTo(1100, 400);
+ctx.closePath(); ctx.fill(); ctx.stroke();
+
+// 中国区域（更详细）
+ctx.fillStyle = '#1e4a7c';
+ctx.beginPath();
+ctx.moveTo(1200, 320); ctx.lineTo(1280, 300); ctx.lineTo(1320, 340); ctx.lineTo(1300, 400);
+ctx.lineTo(1250, 420); ctx.lineTo(1200, 380);
+ctx.closePath(); ctx.fill(); ctx.stroke();
+
+// 欧洲
+ctx.fillStyle = '#1a3a5c';
+ctx.beginPath();
+ctx.moveTo(900, 220); ctx.lineTo(1050, 180); ctx.lineTo(1100, 250); ctx.lineTo(1050, 320);
+ctx.lineTo(950, 300); ctx.lineTo(900, 250);
+ctx.closePath(); ctx.fill(); ctx.stroke();
+
+// 非洲
+ctx.beginPath();
+ctx.moveTo(950, 350); ctx.lineTo(1050, 340); ctx.lineTo(1100, 450); ctx.lineTo(1050, 650);
+ctx.lineTo(950, 700); ctx.lineTo(900, 600); ctx.lineTo(900, 450);
+ctx.closePath(); ctx.fill(); ctx.stroke();
+
+// 北美
+ctx.beginPath();
+ctx.moveTo(300, 180); ctx.lineTo(550, 150); ctx.lineTo(650, 250); ctx.lineTo(600, 400);
+ctx.lineTo(500, 450); ctx.lineTo(350, 400); ctx.lineTo(250, 300);
+ctx.closePath(); ctx.fill(); ctx.stroke();
+
+// 南美
+ctx.beginPath();
+ctx.moveTo(550, 480); ctx.lineTo(650, 500); ctx.lineTo(680, 650); ctx.lineTo(620, 850);
+ctx.lineTo(550, 800); ctx.lineTo(520, 650);
+ctx.closePath(); ctx.fill(); ctx.stroke();
+
+// 澳洲
+ctx.beginPath();
+ctx.moveTo(1450, 700); ctx.lineTo(1600, 680); ctx.lineTo(1650, 780); ctx.lineTo(1550, 820);
+ctx.lineTo(1450, 780);
+ctx.closePath(); ctx.fill(); ctx.stroke();
+
+// 添加网格线
+ctx.strokeStyle = 'rgba(100,150,255,0.08)';
+ctx.lineWidth = 1;
+for (let i = 0; i <= 36; i++) {
+ctx.beginPath(); ctx.moveTo(i * 56.9, 0); ctx.lineTo(i * 56.9, 1024); ctx.stroke();
+}
+for (let i = 0; i <= 18; i++) {
+ctx.beginPath(); ctx.moveTo(0, i * 56.9); ctx.lineTo(2048, i * 56.9); ctx.stroke();
+}
+
+// 添加发光效果（城市区域）
+cities.forEach(city => {
+const x = ((city.lon + 180) / 360) * 2048;
+const y = ((90 - city.lat) / 180) * 1024;
+const grad = ctx.createRadialGradient(x, y, 0, x, y, 30);
+grad.addColorStop(0, city.type === 'cn' ? 'rgba(167,139,250,.4)' : 'rgba(96,165,250,.3)');
+grad.addColorStop(1, 'rgba(0,0,0,0)');
+ctx.fillStyle = grad;
+ctx.fillRect(x - 30, y - 30, 60, 60);
+});
+
+return new THREE.CanvasTexture(canvas);
+}
+
+// ===== 地球组 =====
 const earthGroup = new THREE.Group();
 scene.add(earthGroup);
 
-// 地球球体
-const earthGeometry = new THREE.SphereGeometry(1, 64, 64);
+// 地球主体
+const earthGeometry = new THREE.SphereGeometry(1, 128, 128);
+const earthTexture = createEarthTexture();
 const earthMaterial = new THREE.MeshPhongMaterial({
-    color: 0x1a1a2e,
-    emissive: 0x0f0f23,
-    emissiveIntensity: 0.3,
-    shininess: 30,
-    transparent: true,
-    opacity: 0.95
+map: earthTexture,
+bumpScale: 0.02,
+specular: new THREE.Color(0x1a3a5c),
+shininess: 10
 });
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
 earthGroup.add(earth);
 
-// 地球网格线
-const wireframeGeometry = new THREE.SphereGeometry(1.005, 32, 32);
-const wireframeMaterial = new THREE.MeshBasicMaterial({
-    color: 0xa78bfa,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.08
+// 大气层
+const atmosphereGeometry = new THREE.SphereGeometry(1.15, 64, 64);
+const atmosphereMaterial = new THREE.MeshBasicMaterial({
+color: 0x4c8bf5,
+transparent: true,
+opacity: 0.08,
+side: THREE.BackSide
 });
-const wireframe = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
-earthGroup.add(wireframe);
+const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+earthGroup.add(atmosphere);
 
-// 经线（更明显的线条）
-for (let i = 0; i < 12; i++) {
-    const angle = (i / 12) * Math.PI * 2;
-    const curve = new THREE.EllipseCurve(0, 0, 1.01, 1.01, 0, Math.PI * 2, false, angle);
-    const points = curve.getPoints(64);
-    const geometry = new THREE.BufferGeometry().setFromPoints(points.map(p => new THREE.Vector3(p.x, p.y, 0)));
-    const material = new THREE.LineBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.1 });
-    const line = new THREE.Line(geometry, material);
-    line.rotation.y = angle;
-    earthGroup.add(line);
+// 外发光
+const glowGeometry = new THREE.SphereGeometry(1.25, 64, 64);
+const glowMaterial = new THREE.MeshBasicMaterial({
+color: 0x7c3aed,
+transparent: true,
+opacity: 0.03,
+side: THREE.BackSide
+});
+const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+earthGroup.add(glow);
+
+// ===== 城市标记 =====
+const cityMeshes = [];
+const cityGroup = new THREE.Group();
+earthGroup.add(cityGroup);
+
+cities.forEach((city, i) => {
+const pos = latLonToVector3(city.lat, city.lon, 1.02);
+const color = city.type === 'cn' ? 0xa78bfa : 0x60a5fa;
+
+// 标记点
+const dotGeo = new THREE.SphereGeometry(0.018, 16, 16);
+const dotMat = new THREE.MeshBasicMaterial({ color: color });
+const dot = new THREE.Mesh(dotGeo, dotMat);
+dot.position.copy(pos);
+cityGroup.add(dot);
+
+// 光晕
+const haloGeo = new THREE.RingGeometry(0.03, 0.05, 32);
+const haloMat = new THREE.MeshBasicMaterial({
+color: color,
+transparent: true,
+opacity: 0.3,
+side: THREE.DoubleSide
+});
+const halo = new THREE.Mesh(haloGeo, haloMat);
+halo.position.copy(pos.clone().multiplyScalar(1.001));
+halo.lookAt(new THREE.Vector3(0,0,0));
+cityGroup.add(halo);
+
+// 脉冲环
+const pulseGeo = new THREE.RingGeometry(0.04, 0.06, 32);
+const pulseMat = new THREE.MeshBasicMaterial({
+color: color,
+transparent: true,
+opacity: 0.15,
+side: THREE.DoubleSide
+});
+const pulse = new THREE.Mesh(pulseGeo, pulseMat);
+pulse.position.copy(pos.clone().multiplyScalar(1.002));
+pulse.lookAt(new THREE.Vector3(0,0,0));
+cityGroup.add(pulse);
+
+// 连接线到地心
+const lineGeo = new THREE.BufferGeometry().setFromPoints([
+new THREE.Vector3(0,0,0),
+pos.clone().multiplyScalar(1.01)
+]);
+const lineMat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.1 });
+const line = new THREE.Line(lineGeo, lineMat);
+cityGroup.add(line);
+
+cityMeshes.push({
+name: city.name,
+desc: city.desc,
+lat: city.lat,
+lon: city.lon,
+dot: dot,
+halo: halo,
+pulse: pulse,
+line: line,
+color: color,
+phase: Math.random() * Math.PI * 2
+});
+});
+
+// ===== 卫星轨道线 =====
+const orbitGroup = new THREE.Group();
+earthGroup.add(orbitGroup);
+
+for (let i = 0; i < 3; i++) {
+const orbitRadius = 1.4 + i * 0.2;
+const orbitCurve = new THREE.EllipseCurve(0, 0, orbitRadius, orbitRadius * 0.3, 0, Math.PI * 2, false, i * Math.PI / 3);
+const orbitPoints = orbitCurve.getPoints(128);
+const orbitGeometry = new THREE.BufferGeometry().setFromPoints(
+orbitPoints.map(p => new THREE.Vector3(p.x, p.y * Math.cos(i), p.y * Math.sin(i)))
+);
+const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.06 });
+const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
+orbitGroup.add(orbitLine);
 }
 
-// 纬线
-for (let i = 1; i < 6; i++) {
-    const lat = (i / 6) * Math.PI / 2;
-    const radius = Math.cos(lat) * 1.01;
-    const y = Math.sin(lat) * 1.01;
-    const curve = new THREE.EllipseCurve(0, 0, radius, radius, 0, Math.PI * 2, false, 0);
-    const points = curve.getPoints(64);
-    const geometry = new THREE.BufferGeometry().setFromPoints(points.map(p => new THREE.Vector3(p.x, y, p.y)));
-    const material = new THREE.LineBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.08 });
-    const line = new THREE.Line(geometry, material);
-    earthGroup.add(line);
-
-    const geometry2 = new THREE.BufferGeometry().setFromPoints(points.map(p => new THREE.Vector3(p.x, -y, p.y)));
-    const line2 = new THREE.Line(geometry2, material);
-    earthGroup.add(line2);
+// ===== 星空背景 =====
+const starsGeo = new THREE.BufferGeometry();
+const starsCount = 3000;
+const starsPos = new Float32Array(starsCount * 3);
+const starsColor = new Float32Array(starsCount * 3);
+for (let i = 0; i < starsCount; i++) {
+starsPos[i*3] = (Math.random()-0.5)*80;
+starsPos[i*3+1] = (Math.random()-0.5)*80;
+starsPos[i*3+2] = (Math.random()-0.5)*80;
+const c = Math.random();
+starsColor[i*3] = 0.6 + c*0.4;
+starsColor[i*3+1] = 0.7 + c*0.3;
+starsColor[i*3+2] = 1;
 }
-
-// ===== 数据节点（发光点）=====
-const dataPoints = [];
-const pointCount = 80;
-const pointGeometry = new THREE.SphereGeometry(0.015, 8, 8);
-
-for (let i = 0; i < pointCount; i++) {
-    const phi = Math.acos(-1 + (2 * i) / pointCount);
-    const theta = Math.sqrt(pointCount * Math.PI) * phi;
-
-    const x = Math.cos(theta) * Math.sin(phi) * 1.02;
-    const y = Math.sin(theta) * Math.sin(phi) * 1.02;
-    const z = Math.cos(phi) * 1.02;
-
-    const colors = [0xa78bfa, 0x60a5fa, 0x34d399, 0xf472b6, 0xfbbf24];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-
-    const material = new THREE.MeshBasicMaterial({ color: color });
-    const point = new THREE.Mesh(pointGeometry, material);
-    point.position.set(x, y, z);
-
-    // 发光光晕
-    const glowGeometry = new THREE.SphereGeometry(0.04, 8, 8);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.15
-    });
-    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-    glow.position.set(x, y, z);
-
-    earthGroup.add(point);
-    earthGroup.add(glow);
-
-    dataPoints.push({
-        mesh: point,
-        glow: glow,
-        baseY: y,
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.5 + Math.random() * 1.5
-    });
-}
-
-// 连接线
-const lineMaterial = new THREE.LineBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.06 });
-for (let i = 0; i < 30; i++) {
-    const idx1 = Math.floor(Math.random() * pointCount);
-    const idx2 = Math.floor(Math.random() * pointCount);
-    if (idx1 !== idx2) {
-        const p1 = dataPoints[idx1].mesh.position;
-        const p2 = dataPoints[idx2].mesh.position;
-        const geometry = new THREE.BufferGeometry().setFromPoints([p1, p2]);
-        const line = new THREE.Line(geometry, lineMaterial);
-        earthGroup.add(line);
-    }
-}
-
-// ===== 星星背景 =====
-const starsGeometry = new THREE.BufferGeometry();
-const starsCount = 2000;
-const starsPositions = new Float32Array(starsCount * 3);
-for (let i = 0; i < starsCount * 3; i++) {
-    starsPositions[i] = (Math.random() - 0.5) * 50;
-}
-starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
-const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.02, transparent: true, opacity: 0.6 });
-const stars = new THREE.Points(starsGeometry, starsMaterial);
+starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+starsGeo.setAttribute('color', new THREE.BufferAttribute(starsColor, 3));
+const starsMat = new THREE.PointsMaterial({ size: 0.03, vertexColors: true, transparent: true, opacity: 0.8 });
+const stars = new THREE.Points(starsGeo, starsMat);
 scene.add(stars);
 
 // ===== 光源 =====
-const ambientLight = new THREE.AmbientLight(0x404080, 0.5);
-scene.add(ambientLight);
-
-const directionalLight = new THREE.DirectionalLight(0xa78bfa, 0.8);
-directionalLight.position.set(5, 3, 5);
-scene.add(directionalLight);
-
-const pointLight = new THREE.PointLight(0x60a5fa, 0.5, 10);
-pointLight.position.set(-3, 2, 3);
-scene.add(pointLight);
+scene.add(new THREE.AmbientLight(0x404080, 0.4));
+const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+sunLight.position.set(5, 3, 5);
+scene.add(sunLight);
+const fillLight = new THREE.DirectionalLight(0x4c8bf5, 0.3);
+fillLight.position.set(-5, -2, -5);
+scene.add(fillLight);
 
 // ===== 交互控制 =====
-let isDragging = false;
-let previousMousePosition = { x: 0, y: 0 };
-let targetRotation = { x: 0, y: 0 };
-let currentRotation = { x: 0, y: 0 };
+let isDragging = false, autoRotate = true;
+let prevPos = { x: 0, y: 0 };
+let targetRot = { x: 0.3, y: 0 };
+let currRot = { x: 0.3, y: 0 };
+let targetZoom = 4;
+let currZoom = 4;
 
-// 鼠标事件
-renderer.domElement.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    previousMousePosition = { x: e.clientX, y: e.clientY };
+// 鼠标
+renderer.domElement.addEventListener('mousedown', e => { isDragging = true; autoRotate = false; prevPos = { x: e.clientX, y: e.clientY }; });
+renderer.domElement.addEventListener('mousemove', e => {
+if (!isDragging) return;
+const dx = e.clientX - prevPos.x, dy = e.clientY - prevPos.y;
+targetRot.y += dx * 0.005;
+targetRot.x += dy * 0.005;
+targetRot.x = Math.max(-1, Math.min(1, targetRot.x));
+prevPos = { x: e.clientX, y: e.clientY };
 });
-
-renderer.domElement.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-        const deltaX = e.clientX - previousMousePosition.x;
-        const deltaY = e.clientY - previousMousePosition.y;
-        targetRotation.y += deltaX * 0.005;
-        targetRotation.x += deltaY * 0.005;
-        targetRotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, targetRotation.x));
-        previousMousePosition = { x: e.clientX, y: e.clientY };
-    }
-});
-
 renderer.domElement.addEventListener('mouseup', () => isDragging = false);
 renderer.domElement.addEventListener('mouseleave', () => isDragging = false);
-
-// 滚轮缩放
-renderer.domElement.addEventListener('wheel', (e) => {
-    camera.position.z += e.deltaY * 0.002;
-    camera.position.z = Math.max(1.8, Math.min(8, camera.position.z));
+renderer.domElement.addEventListener('wheel', e => {
+targetZoom += e.deltaY * 0.003;
+targetZoom = Math.max(1.8, Math.min(10, targetZoom));
 });
 
-// 触摸事件
-renderer.domElement.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 1) {
-        isDragging = true;
-        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    }
+// 触摸
+renderer.domElement.addEventListener('touchstart', e => {
+if (e.touches.length === 1) { isDragging = true; autoRotate = false; prevPos = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }
 });
-
-renderer.domElement.addEventListener('touchmove', (e) => {
-    if (isDragging && e.touches.length === 1) {
-        const deltaX = e.touches[0].clientX - previousMousePosition.x;
-        const deltaY = e.touches[0].clientY - previousMousePosition.y;
-        targetRotation.y += deltaX * 0.008;
-        targetRotation.x += deltaY * 0.008;
-        targetRotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, targetRotation.x));
-        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    }
+renderer.domElement.addEventListener('touchmove', e => {
+if (isDragging && e.touches.length === 1) {
+const dx = e.touches[0].clientX - prevPos.x, dy = e.touches[0].clientY - prevPos.y;
+targetRot.y += dx * 0.008; targetRot.x += dy * 0.008;
+targetRot.x = Math.max(-1, Math.min(1, targetRot.x));
+prevPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+}
 });
-
 renderer.domElement.addEventListener('touchend', () => isDragging = false);
 
+// ===== Raycaster 点击检测 =====
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+function onMouseClick(event) {
+if (isDragging) return;
+mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+raycaster.setFromCamera(mouse, camera);
+const dots = cityMeshes.map(c => c.dot);
+const intersects = raycaster.intersectObjects(dots);
+if (intersects.length > 0) {
+const idx = dots.indexOf(intersects[0].object);
+if (idx >= 0) flyToCity(idx);
+}
+}
+
+renderer.domElement.addEventListener('click', onMouseClick);
+
+// ===== 飞到城市 =====
+function flyToCity(index) {
+autoRotate = false;
+const city = cityMeshes[index];
+const phi = (90 - city.lat) * Math.PI / 180;
+const theta = (city.lon + 180) * Math.PI / 180;
+
+// 计算相机目标位置（从城市方向看过来）
+const camDist = 2.2;
+const camX = camDist * Math.sin(phi) * Math.cos(theta + Math.PI);
+const camY = camDist * Math.cos(phi);
+const camZ = camDist * Math.sin(phi) * Math.sin(theta + Math.PI);
+
+// 动画插值
+const startPos = camera.position.clone();
+const endPos = new THREE.Vector3(camX, camY, camZ);
+const startRotX = targetRot.x, startRotY = targetRot.y;
+const endRotY = -(theta + Math.PI) + Math.PI / 2;
+const endRotX = phi - Math.PI / 2;
+
+let progress = 0;
+function animateFly() {
+progress += 0.02;
+if (progress > 1) progress = 1;
+const ease = 1 - Math.pow(1 - progress, 3);
+camera.position.lerpVectors(startPos, endPos, ease);
+targetRot.x = startRotX + (endRotX - startRotX) * ease;
+targetRot.y = startRotY + (endRotY - startRotY) * ease;
+targetZoom = 2.2;
+if (progress < 1) requestAnimationFrame(animateFly);
+}
+animateFly();
+
+// 显示信息
+showPopup(city, event);
+
+// 高亮城市列表
+highlightCity(index);
+}
+
+// ===== 信息弹窗 =====
+const popup = document.getElementById('infoPopup');
+function showPopup(city, event) {
+document.getElementById('popupTitle').textContent = city.name;
+document.getElementById('popupDesc').textContent = city.desc;
+document.getElementById('popupCoords').textContent = `${city.lat.toFixed(2)}°N, ${Math.abs(city.lon).toFixed(2)}°${city.lon >= 0 ? 'E' : 'W'}`;
+popup.classList.add('show');
+
+// 定位弹窗
+if (event) {
+popup.style.left = Math.min(event.clientX + 20, window.innerWidth - 260) + 'px';
+popup.style.top = Math.max(event.clientY - 50, 10) + 'px';
+}
+
+setTimeout(() => popup.classList.remove('show'), 4000);
+}
+
+// ===== 城市列表面板 =====
+const cityList = document.getElementById('cityList');
+cities.forEach((city, i) => {
+const item = document.createElement('div');
+item.className = 'city-item';
+item.innerHTML = `<div class="city-dot ${city.type === 'world' ? 'world' : ''}"></div>${city.name}`;
+item.addEventListener('click', () => flyToCity(i));
+item.addEventListener('mouseenter', () => {
+document.getElementById('tooltip').textContent = city.desc;
+document.getElementById('tooltip').classList.add('show');
+});
+item.addEventListener('mousemove', e => {
+document.getElementById('tooltip').style.left = e.clientX + 15 + 'px';
+document.getElementById('tooltip').style.top = e.clientY + 15 + 'px';
+});
+item.addEventListener('mouseleave', () => document.getElementById('tooltip').classList.remove('show'));
+cityList.appendChild(item);
+});
+
+function highlightCity(index) {
+document.querySelectorAll('.city-item').forEach((el, i) => {
+el.classList.toggle('active', i === index);
+});
+}
+
+// ===== 控制按钮 =====
+document.getElementById('btnReset').addEventListener('click', () => {
+targetRot = { x: 0.3, y: 0 };
+targetZoom = 4;
+autoRotate = true;
+highlightCity(-1);
+});
+document.getElementById('btnZoomIn').addEventListener('click', () => targetZoom = Math.max(1.8, targetZoom - 0.5));
+document.getElementById('btnZoomOut').addEventListener('click', () => targetZoom = Math.min(10, targetZoom + 0.5));
+document.getElementById('btnRotate').addEventListener('click', () => autoRotate = !autoRotate);
+
 // ===== 动画循环 =====
-let frameCount = 0;
-let lastTime = performance.now();
-let fps = 60;
-
+let time = 0;
 function animate() {
-    requestAnimationFrame(animate);
+requestAnimationFrame(animate);
+time += 0.01;
 
-    const now = performance.now();
-    frameCount++;
-    if (now - lastTime >= 1000) {
-        fps = frameCount;
-        frameCount = 0;
-        lastTime = now;
-        document.getElementById('stat-fps').textContent = fps;
-    }
+// 自动旋转
+if (autoRotate && !isDragging) targetRot.y += 0.001;
 
-    // 自动旋转
-    if (!isDragging) {
-        targetRotation.y += 0.001;
-    }
+// 平滑插值
+currRot.x += (targetRot.x - currRot.x) * 0.05;
+currRot.y += (targetRot.y - currRot.y) * 0.05;
+currZoom += (targetZoom - currZoom) * 0.05;
 
-    // 平滑插值
-    currentRotation.x += (targetRotation.x - currentRotation.x) * 0.05;
-    currentRotation.y += (targetRotation.y - currentRotation.y) * 0.05;
+earthGroup.rotation.x = currRot.x;
+earthGroup.rotation.y = currRot.y;
+camera.position.z = currZoom;
 
-    earthGroup.rotation.x = currentRotation.x;
-    earthGroup.rotation.y = currentRotation.y;
+// 城市脉冲动画
+cityMeshes.forEach(c => {
+const s = 1 + Math.sin(time * 2 + c.phase) * 0.4;
+c.dot.scale.setScalar(s);
+c.pulse.scale.setScalar(1 + Math.sin(time * 1.5 + c.phase) * 0.5);
+c.pulse.material.opacity = 0.1 + Math.sin(time * 2 + c.phase) * 0.08;
+c.halo.rotation.z += 0.01;
+});
 
-    // 数据点脉动
-    const time = now * 0.001;
-    dataPoints.forEach((dp, i) => {
-        const scale = 1 + Math.sin(time * dp.speed + dp.phase) * 0.3;
-        dp.mesh.scale.setScalar(scale);
-        dp.glow.material.opacity = 0.1 + Math.sin(time * dp.speed + dp.phase) * 0.08;
-    });
+// 轨道旋转
+orbitGroup.rotation.y += 0.0005;
 
-    // 星星微动
-    stars.rotation.y += 0.0002;
+// 大气层呼吸
+atmosphere.scale.setScalar(1 + Math.sin(time * 0.5) * 0.005);
 
-    renderer.render(scene, camera);
+// 星空微动
+stars.rotation.y += 0.0001;
+
+renderer.render(scene, camera);
 }
 
 // ===== 窗口调整 =====
 window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+camera.aspect = window.innerWidth / window.innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// ===== 初始化 =====
-document.getElementById('stat-points').textContent = pointCount;
-
-// 隐藏加载画面
-setTimeout(() => {
-    document.getElementById('loading').classList.add('hidden');
-}, 1500);
-
+// ===== 加载完成 =====
+setTimeout(() => document.getElementById('loading').classList.add('hidden'), 2000);
 animate();
 </script>
 
